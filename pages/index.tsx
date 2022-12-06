@@ -1,24 +1,34 @@
 import Head from 'next/head';
-import styles from '../styles/Home.module.css';
+import { HomeView } from '../routing/index';
+import dynamic from 'next/dynamic';
+import { ConnectionProvider } from '@solana/wallet-adapter-react';
+import { clusterApiUrl } from '@solana/web3.js';
+import { useMemo, useState } from 'react';
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+
+const WalletProvider = dynamic(
+  () => import('../context/SolanaContext/ClientWalletProvider'),
+  {
+    ssr: false,
+  }
+);
 
 export default function Home() {
+  const [network, setNetwork] = useState(WalletAdapterNetwork.Devnet);
+  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>KaChing Cash Register Admin Panel</title>
         <meta name="description" content="" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <h1>KaChing Cash Register Admin Panel</h1>
-
-      <section id="dashboard">
-        <nav>{'sidebar navigation'}</nav>
-        <header>{'header'}</header>
-        <main>{'main content'}</main>
-      </section>
-
-      <footer className={styles.footer}>Powered by UnCaged Studios</footer>
+      <ConnectionProvider endpoint={endpoint}>
+        <WalletProvider>
+          <HomeView />
+        </WalletProvider>
+      </ConnectionProvider>
     </div>
   );
 }
