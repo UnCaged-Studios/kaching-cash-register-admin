@@ -14,8 +14,6 @@ export const PROGRAM_ADDRESS =
 export const fetchAllKaChingCashRegisters = async (
   connection: Connection
 ): Promise<Array<KachingCashRegisterModel>> => {
-  console.log({ PROGRAM_ADDRESS });
-  console.log({ connection });
   const accounts = await connection.getProgramAccounts(
     new PublicKey(PROGRAM_ADDRESS),
     {

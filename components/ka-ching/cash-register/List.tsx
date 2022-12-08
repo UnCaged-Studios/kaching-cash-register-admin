@@ -13,7 +13,6 @@ export const List: FC = () => {
 
   const getAllKaChingCashRegisters = async () => {
     const kaChingCashRegisters = await fetchAllKaChingCashRegisters(connection);
-    console.log(kaChingCashRegisters);
     setKaChindData(kaChingCashRegisters);
   };
 
