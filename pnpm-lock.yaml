@@ -2,10 +2,8 @@ lockfileVersion: 5.4
 
 specifiers:
   '@solana/wallet-adapter-base': ^0.9.19
-  '@solana/wallet-adapter-phantom': ^0.9.18
   '@solana/wallet-adapter-react': ^0.15.25
   '@solana/wallet-adapter-react-ui': ^0.9.23
-  '@solana/wallet-adapter-solflare': ^0.6.19
   '@solana/wallet-adapter-wallets': ^0.19.7
   '@solana/web3.js': ^1.58.0
   '@types/node': 18.11.10
@@ -13,19 +11,15 @@ specifiers:
   '@types/react-dom': 18.0.9
   eslint: 8.28.0
   eslint-config-next: 13.0.6
-  i: ^0.3.7
   next: 13.0.6
-  npm: ^9.1.3
   react: 18.2.0
   react-dom: 18.2.0
   typescript: 4.9.3
 
 dependencies:
   '@solana/wallet-adapter-base': 0.9.19_@solana+web3.js@1.69.0
-  '@solana/wallet-adapter-phantom': 0.9.18_@solana+web3.js@1.69.0
   '@solana/wallet-adapter-react': 0.15.25_kuxklwuddpzvb4e4hcczcnpnga
   '@solana/wallet-adapter-react-ui': 0.9.23_wxox3ot2img2tvumi2x6vnzkea
-  '@solana/wallet-adapter-solflare': 0.6.19_@solana+web3.js@1.69.0
   '@solana/wallet-adapter-wallets': 0.19.7_x4dvv6r5gu6cojid7qpcrkafga
   '@solana/web3.js': 1.69.0
   '@types/node': 18.11.10
@@ -33,9 +27,7 @@ dependencies:
   '@types/react-dom': 18.0.9
   eslint: 8.28.0
   eslint-config-next: 13.0.6_hsf322ms6xhhd4b5ne6lb74y4a
-  i: 0.3.7
   next: 13.0.6_672uxklweod7ene3nqtsh262ca
-  npm: 9.1.3
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   typescript: 4.9.3
@@ -5824,11 +5816,6 @@ packages:
       toidentifier: 1.0.1
     dev: false
 
-  /i/0.3.7:
-    resolution: {integrity: sha512-FYz4wlXgkQwIPqhzC5TdNMLSE5+GS1IIDJZY/1ZiEPCT2S3COUVZeT5OW4BmW4r5LHLQuOosSwsvnroG9GR59Q==}
-    engines: {node: '>=0.4'}
-    dev: false
-
   /ieee754/1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
     dev: false
@@ -7228,81 +7215,6 @@ packages:
     dependencies:
       path-key: 2.0.1
     dev: false
-
-  /npm/9.1.3:
-    resolution: {integrity: sha512-MOlpFXmfdPmQhvbBuV0RkaDR8VcO45eT2+ecLYC0GEP266PYAAZ6L33QPz9SR7fC3o4L+1V/KV9DtoHTetaDuw==}
-    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-    hasBin: true
-    dev: false
-    bundledDependencies:
-      - '@isaacs/string-locale-compare'
-      - '@npmcli/arborist'
-      - '@npmcli/config'
-      - '@npmcli/map-workspaces'
-      - '@npmcli/package-json'
-      - '@npmcli/run-script'
-      - abbrev
-      - archy
-      - cacache
-      - chalk
-      - ci-info
-      - cli-columns
-      - cli-table3
-      - columnify
-      - fastest-levenshtein
-      - fs-minipass
-      - glob
-      - graceful-fs
-      - hosted-git-info
-      - ini
-      - init-package-json
-      - is-cidr
-      - json-parse-even-better-errors
-      - libnpmaccess
-      - libnpmdiff
-      - libnpmexec
-      - libnpmfund
-      - libnpmhook
-      - libnpmorg
-      - libnpmpack
-      - libnpmpublish
-      - libnpmsearch
-      - libnpmteam
-      - libnpmversion
-      - make-fetch-happen
-      - minimatch
-      - minipass
-      - minipass-pipeline
-      - mkdirp
-      - ms
-      - node-gyp
-      - nopt
-      - npm-audit-report
-      - npm-install-checks
-      - npm-package-arg
-      - npm-pick-manifest
-      - npm-profile
-      - npm-registry-fetch
-      - npm-user-validate
-      - npmlog
-      - p-map
-      - pacote
-      - parse-conflict-json
-      - proc-log
-      - qrcode-terminal
-      - read
-      - read-package-json
-      - read-package-json-fast
-      - rimraf
-      - semver
-      - ssri
-      - tar
-      - text-table
-      - tiny-relative-date
-      - treeverse
-      - validate-npm-package-name
-      - which
-      - write-file-atomic
 
   /nullthrows/1.1.1:
     resolution: {integrity: sha512-2vPPEi+Z7WqML2jZYddDIfy5Dqb0r2fze2zTxNNknZaFpVHU3mFB3R+DWeJWGVx0ecvttSGlJTI+WG+8Z4cDWw==}
