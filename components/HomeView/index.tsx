@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import styles from '../../styles/Home.module.css';
 import dynamic from 'next/dynamic';
+import { MyComponent } from '../../utils/sdk';
 
 const WalletProvider = dynamic(
   () => import('../../context/SolanaContext/ClientWalletProvider'),
@@ -23,7 +24,10 @@ export const HomeView: FC = () => {
             </div>
           </header>
           <nav>{'sidebar navigation'}</nav>
-          <main>{'main content'}</main>
+          <main>
+            {'main content'}
+            <MyComponent />
+          </main>
         </section>
         <footer className={styles.footer}>Powered by UnCaged Studios</footer>
       </WalletProvider>
