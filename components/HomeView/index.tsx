@@ -25,7 +25,6 @@ export const HomeView: FC = () => {
           </header>
           <nav>{'sidebar navigation'}</nav>
           <main>
-            {'main content'}
             <List />
           </main>
         </section>

@@ -24,3 +24,8 @@
   align-items: center;
   margin-top: 20px;
 }
+
+.dropdown {
+  padding: 5px;
+  margin: 5px;
+}
