@@ -3,6 +3,7 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import styles from '../../styles/Home.module.css';
 import dynamic from 'next/dynamic';
 import { List } from '../ka-ching/cash-register/List';
+import { ConnectionEndpoint } from '../../context/ConnectionEndpoint';
 
 const WalletProvider = dynamic(
   () => import('../../context/SolanaContext/ClientWalletProvider'),
@@ -25,6 +26,9 @@ export const HomeView: FC = () => {
           </header>
           <nav>{'sidebar navigation'}</nav>
           <main>
+            <div>
+              <ConnectionEndpoint />
+            </div>
             <List />
           </main>
         </section>

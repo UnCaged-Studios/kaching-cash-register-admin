@@ -3,17 +3,23 @@ import {
   fetchAllKaChingCashRegisters,
   KachingCashRegisterModel,
 } from '../../../utils/sdk';
-import { useConnection } from '@solana/wallet-adapter-react';
+import { Connection } from '@solana/web3.js';
 
 export const List: FC = () => {
-  const { connection } = useConnection();
   const [kaChingData, setKaChindData] = useState<KachingCashRegisterModel[]>(
     []
   );
 
   const getAllKaChingCashRegisters = async () => {
-    const kaChingCashRegisters = await fetchAllKaChingCashRegisters(connection);
-    setKaChindData(kaChingCashRegisters);
+    if (window.localStorage.getItem('endpoint') !== null) {
+      const connection = new Connection(
+        JSON.parse(window.localStorage.getItem('endpoint'))
+      );
+      const kaChingCashRegisters = await fetchAllKaChingCashRegisters(
+        connection
+      );
+      setKaChindData(kaChingCashRegisters);
+    }
   };
 
   const [displayForm, setDisplayForm] = useState(false);
