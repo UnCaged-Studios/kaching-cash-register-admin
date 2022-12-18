@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styles from '../styles/Home.module.css';
-import { Endpoint } from '../utils/endpoint';
+import { Endpoint } from '../utils/Enum';
 import { setLocalStorage } from '../utils/Set';
 
 export const EndpointSettings: FC = () => {
