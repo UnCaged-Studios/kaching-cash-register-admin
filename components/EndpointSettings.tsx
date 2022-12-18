@@ -1,35 +1,34 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styles from '../styles/Home.module.css';
+import { Endpoint } from '../utils/endpoint';
 
-export const ConnectionEndpoint: FC = () => {
-  const [endpoint, setEndpoint] = useState('https://api.devnet.solana.com');
-  window.localStorage.setItem('endpoint', JSON.stringify(endpoint));
+export const EndpointSettings: FC = () => {
+  const [endpoint, setEndpoint] = useState(Endpoint.DEVNET);
   const [displayInput, setDisplayInput] = useState(false);
   const { register, handleSubmit } = useForm();
   const handleChange = (event: { target: { value: any } }) => {
     switch (event.target.value) {
       case 'devnet':
-        setEndpoint('https://api.devnet.solana.com');
-        window.localStorage.setItem('endpoint', JSON.stringify(endpoint));
+        setEndpoint(Endpoint.DEVNET);
         break;
       case 'mainnet':
-        setEndpoint('https://api.mainnet-beta.solana.com');
-        window.localStorage.setItem('endpoint', JSON.stringify(endpoint));
+        setEndpoint(Endpoint.MAINNET);
         break;
       case 'testnet':
-        setEndpoint('https://api.testnet.solana.com');
-        window.localStorage.setItem('endpoint', JSON.stringify(endpoint));
+        setEndpoint(Endpoint.TESTNET);
         break;
       case 'custom':
         setDisplayInput(true);
         break;
       default:
-        setEndpoint('https://api.devnet.solana.com');
-        window.localStorage.setItem('endpoint', JSON.stringify(endpoint));
+        setEndpoint(Endpoint.DEVNET);
         break;
     }
   };
+  useEffect(() => {
+    window.localStorage.setItem('endpoint', JSON.stringify(endpoint));
+  }, [endpoint]);
   return (
     <>
       <select onChange={handleChange} className={styles.dropdown}>
@@ -43,7 +42,6 @@ export const ConnectionEndpoint: FC = () => {
         <form
           onSubmit={handleSubmit((inputEndpoint: any) => {
             setEndpoint(inputEndpoint.input);
-            window.localStorage.setItem('endpoint', JSON.stringify(endpoint));
             setDisplayInput(false);
           })}
         >
