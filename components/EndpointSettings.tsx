@@ -1,14 +1,24 @@
 import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import styles from '../styles/Home.module.css';
 import { Endpoint } from '../utils/Enum';
 import { setLocalStorage } from '../utils/Set';
 
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import FormHelperText from '@mui/material/FormHelperText';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+
 export const EndpointSettings: FC = () => {
   const [endpoint, setEndpoint] = useState(Endpoint.DEVNET);
+  const [label, setLabel] = useState('');
   const [displayInput, setDisplayInput] = useState(false);
   const { register, handleSubmit } = useForm();
-  const handleChange = (event: { target: { value: any } }) => {
+  const handleChange = (event: SelectChangeEvent) => {
+    setLabel(event.target.value);
     switch (event.target.value) {
       case 'devnet':
         setEndpoint(Endpoint.DEVNET);
@@ -28,30 +38,45 @@ export const EndpointSettings: FC = () => {
     }
   };
   useEffect(() => {
+    setDisplayInput(false);
     setLocalStorage('endpoint', JSON.stringify(endpoint));
   }, [endpoint]);
   return (
     <>
-      <select onChange={handleChange} className={styles.dropdown}>
-        <option value="devnet">Devnet</option>
-        <option value="mainnet">Mainnet</option>
-        <option value="testnet">Testnet</option>
-        <option value="custom">Custom</option>
-      </select>
+      <Box sx={{ m: 1 }}>
+        <FormControl size="small">
+          <InputLabel>Endpoint</InputLabel>
+          <Select value={label} label="Endpoint" onChange={handleChange}>
+            <MenuItem value={'devnet'}>Devnet</MenuItem>
+            <MenuItem value={'mainnet'}>Mainnet</MenuItem>
+            <MenuItem value={'testnet'}>Testnet</MenuItem>
+            <MenuItem value={'custom'}>Custom</MenuItem>
+          </Select>
+          <FormHelperText>Choose endpoint</FormHelperText>
+        </FormControl>
+      </Box>
 
       {displayInput && (
-        <form
+        <Box
+          component="form"
+          sx={{ '& button': { m: 1 } }}
+          noValidate
+          autoComplete="off"
           onSubmit={handleSubmit((inputEndpoint: any) => {
             setEndpoint(inputEndpoint.input);
             setDisplayInput(false);
           })}
         >
-          <input
+          <TextField
             {...register('input', { required: true })}
-            placeholder="Endpoint"
+            label="Custom Endpoint"
+            variant="filled"
+            sx={{ m: 1 }}
           />
-          <input type="submit" />
-        </form>
+          <Button type="submit" variant="contained" size="small">
+            Submit
+          </Button>
+        </Box>
       )}
     </>
   );
