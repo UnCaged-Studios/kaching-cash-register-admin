@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styles from '../styles/Home.module.css';
 import { Endpoint } from '../utils/endpoint';
+import { setLocalStorage } from '../utils/Set';
 
 export const EndpointSettings: FC = () => {
   const [endpoint, setEndpoint] = useState(Endpoint.DEVNET);
@@ -27,7 +28,7 @@ export const EndpointSettings: FC = () => {
     }
   };
   useEffect(() => {
-    window.localStorage.setItem('endpoint', JSON.stringify(endpoint));
+    setLocalStorage('endpoint', JSON.stringify(endpoint));
   }, [endpoint]);
   return (
     <>

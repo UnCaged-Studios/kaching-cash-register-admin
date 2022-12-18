@@ -4,6 +4,7 @@ import {
   KachingCashRegisterModel,
 } from '../../../utils/sdk';
 import { Connection } from '@solana/web3.js';
+import { getLocalStorage } from '../../../utils/Get';
 
 export const List: FC = () => {
   const [kaChingData, setKaChindData] = useState<KachingCashRegisterModel[]>(
@@ -11,10 +12,9 @@ export const List: FC = () => {
   );
 
   const getAllKaChingCashRegisters = async () => {
-    if (window.localStorage.getItem('endpoint') !== null) {
-      const connection = new Connection(
-        JSON.parse(window.localStorage.getItem('endpoint'))
-      );
+    const endpoint = getLocalStorage('endpoint');
+    if (endpoint !== null) {
+      const connection = new Connection(JSON.parse(endpoint));
       const kaChingCashRegisters = await fetchAllKaChingCashRegisters(
         connection
       );
