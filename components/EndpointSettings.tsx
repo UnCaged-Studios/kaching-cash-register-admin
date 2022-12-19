@@ -1,23 +1,30 @@
 import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Endpoint } from '../utils/Enum';
-import { setLocalStorage } from '../utils/Set';
+import { setLocalStorage } from '../utils/localStorageHandle';
 
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import FormHelperText from '@mui/material/FormHelperText';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
+import {
+  Box,
+  InputLabel,
+  MenuItem,
+  FormControl,
+  FormHelperText,
+  TextField,
+  Button,
+  Select,
+} from '@mui/material';
+
+enum Endpoint {
+  DEVNET = 'https://api.devnet.solana.com',
+  MAINNET = 'https://api.mainnet-beta.solana.com',
+  TESTNET = 'https://api.testnet.solana.com',
+}
 
 export const EndpointSettings: FC = () => {
   const [endpoint, setEndpoint] = useState(Endpoint.DEVNET);
   const [label, setLabel] = useState('');
   const [displayInput, setDisplayInput] = useState(false);
   const { register, handleSubmit } = useForm();
-  const handleChange = (event: SelectChangeEvent) => {
+  const handleChange = (event: { target: { value: any } }) => {
     setLabel(event.target.value);
     switch (event.target.value) {
       case 'devnet':

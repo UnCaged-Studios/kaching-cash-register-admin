@@ -4,16 +4,18 @@ import {
   KachingCashRegisterModel,
 } from '../../../utils/sdk';
 import { Connection } from '@solana/web3.js';
-import { getLocalStorage } from '../../../utils/Get';
+import { getLocalStorage } from '../../../utils/localStorageHandle';
 
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+} from '@mui/material';
 
 export const List: FC = () => {
   const [kaChingData, setKaChindData] = useState<KachingCashRegisterModel[]>(
@@ -57,26 +59,25 @@ export const List: FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {kaChingData &&
-                  kaChingData.map((val, idx) => (
-                    <TableRow
-                      key={idx}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                {kaChingData?.map((val, idx) => (
+                  <TableRow
+                    key={idx}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                    <TableCell>{val.address.toString()}</TableCell>
+                    <TableCell>{val.cashRegisterId}</TableCell>
+                    <TableCell>{val.cashierPublicKey.toString()}</TableCell>
+                    <TableCell
+                      sx={{
+                        maxWidth: 30,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
                     >
-                      <TableCell>{val.address.toString()}</TableCell>
-                      <TableCell>{val.cashRegisterId}</TableCell>
-                      <TableCell>{val.cashierPublicKey.toString()}</TableCell>
-                      <TableCell
-                        sx={{
-                          maxWidth: 30,
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                        }}
-                      >
-                        {val.orderSignersWhitelist.toString()}
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                      {val.orderSignersWhitelist.toString()}
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </TableContainer>
