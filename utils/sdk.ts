@@ -18,6 +18,113 @@ export type KachingCashRegisterModel = {
 export const PROGRAM_ADDRESS =
   KachingCashRegister.KachingProgramIDL.metadata.address;
 
+function createAdminSDK() {
+  const { KachingProgramIDL } = KachingCashRegister;
+  const programAPI = new anchor.Program(
+    KachingProgramIDL as any,
+    new PublicKey(KachingProgramIDL.metadata.address),
+    {
+      publicKey: Keypair.generate().publicKey,
+    } as any
+  ).methods;
+  return KachingCashRegister.createAdminSDKv1(programAPI);
+}
+
+function createOrderSignerSDK() {
+  return KachingCashRegister.createOrderSignerSDKv1();
+}
+
+function createCustomerSDK() {
+  const { KachingProgramIDL } = KachingCashRegister;
+  const programAPI = new anchor.Program(
+    KachingProgramIDL as any,
+    new PublicKey(KachingProgramIDL.metadata.address),
+    {
+      publicKey: Keypair.generate().publicKey,
+    } as any
+  ).methods;
+  return KachingCashRegister.createCustomerSDKv1(programAPI);
+}
+
+const adminSDK = createAdminSDK();
+
+export const orderSignerSDK = createOrderSignerSDK();
+
+export const customerSDK = createCustomerSDK();
+
+export const createCashRegisterTxBuilder = ({
+  cashier,
+  targetAccount,
+}: {
+  cashier: PublicKey;
+  targetAccount: PublicKey;
+}) => {
+  const { createAccountParams, cashRegisterInitParams } =
+    adminSDK.CreateConsumedOrdersAccount.createParams();
+  return {
+    consumedOrdersTx: () => {
+      const createConsumedOrdersAccountIx =
+        adminSDK.CreateConsumedOrdersAccount.createTx(
+          cashier,
+          targetAccount,
+          LAMPORTS_PER_SOL * 0.63, // 0.62670624 is Rent-exempt minimum for 89916 bytes
+          createAccountParams
+        );
+      return new Transaction().add(createConsumedOrdersAccountIx);
+    },
+    cashRegisterTx: (cashRegisterId: string) => {
+      return adminSDK.CreateCashRegister.createTx({
+        cashier,
+        cashRegisterId,
+        orderSignersWhitelist: [cashier],
+        consumedOrders: {
+          account: targetAccount,
+          ...cashRegisterInitParams,
+        },
+      });
+    },
+  };
+};
+
+export const createCashBoxTxBuilder = ({
+  currency,
+  cashier,
+}: {
+  currency: PublicKey;
+  cashier: PublicKey;
+}) => {
+  return {
+    cashBoxTx: (cashRegisterId: string) => {
+      return adminSDK.CreateTokenCashbox.createTx({
+        cashRegisterId,
+        currency,
+        cashier,
+      });
+    },
+  };
+};
+
+export const updateOrderSignersWhitelistTxBuilder = ({
+  cashier,
+}: {
+  cashier: PublicKey;
+}) => {
+  return {
+    updateOrderSignersWhitelistTx: (
+      cashRegisterId: string,
+      orderSignersWhitelist: Array<PublicKey>,
+      updateType: 'merge' | 'override'
+    ) => {
+      return adminSDK.UpdateOrderSignersWhitelist.createTx({
+        cashRegisterId,
+        cashier,
+        orderSignersWhitelist,
+        updateType,
+      });
+    },
+  };
+};
+
 export const fetchAllKaChingCashRegisters = async (
   connection: Connection
 ): Promise<Array<KachingCashRegisterModel>> => {
@@ -44,52 +151,4 @@ export const fetchAllKaChingCashRegisters = async (
       orderSignersWhitelist,
     };
   });
-};
-
-function createAdminSDK() {
-  const { KachingProgramIDL } = KachingCashRegister;
-  const programAPI = new anchor.Program(
-    KachingProgramIDL as any,
-    new PublicKey(KachingProgramIDL.metadata.address),
-    {
-      publicKey: Keypair.generate().publicKey,
-    } as any
-  ).methods;
-  return KachingCashRegister.createAdminSDKv1(programAPI);
-}
-
-const adminSDK = createAdminSDK();
-
-export const createCashRegisterTxBuilder = ({
-  cashier,
-  targetAccount,
-}: {
-  cashier: PublicKey;
-  targetAccount: PublicKey;
-}) => {
-  const { createAccountParams, cashRegisterInitParams } =
-    adminSDK.CreateConsumedOrdersAccount.createParams();
-  return {
-    consumedOrdersTx: () => {
-      const createConsumedOrdersAccountIx =
-        adminSDK.CreateConsumedOrdersAccount.createTx(
-          cashier,
-          targetAccount,
-          LAMPORTS_PER_SOL * 0.63, // 0.62670624 is Rent-exempt minimum for 89916 bytes
-          createAccountParams
-        );
-      return new Transaction().add(createConsumedOrdersAccountIx);
-    },
-    cashRegisterTx: (cashRegisterId: string) => {
-      return adminSDK.CreateCashRegister.createTx({
-        cashier,
-        cashRegisterId,
-        consumedOrders: {
-          account: targetAccount,
-          ...cashRegisterInitParams,
-        },
-        orderSignersWhitelist: [],
-      });
-    },
-  };
 };

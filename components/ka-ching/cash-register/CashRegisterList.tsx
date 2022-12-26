@@ -17,19 +17,23 @@ import {
   Button,
 } from '@mui/material';
 
-export const List: FC = () => {
+export const CashRegisterList: FC = () => {
   const [kaChingData, setKaChindData] = useState<KachingCashRegisterModel[]>(
     []
   );
 
   const getAllKaChingCashRegisters = async () => {
-    const endpoint = getLocalStorage('endpoint');
-    if (endpoint !== null) {
-      const connection = new Connection(JSON.parse(endpoint));
-      const kaChingCashRegisters = await fetchAllKaChingCashRegisters(
-        connection
-      );
-      setKaChindData(kaChingCashRegisters);
+    try {
+      const endpoint = getLocalStorage('endpoint');
+      if (endpoint) {
+        const connection = new Connection(JSON.parse(endpoint));
+        const kaChingCashRegisters = await fetchAllKaChingCashRegisters(
+          connection
+        );
+        setKaChindData(kaChingCashRegisters);
+      }
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -44,7 +48,7 @@ export const List: FC = () => {
           getAllKaChingCashRegisters();
         }}
       >
-        Show List
+        Create List
       </Button>
       {displayForm && (
         <div style={{ margin: '0.5rem' }}>
