@@ -27,16 +27,11 @@ export const CreateCashRegister: FC = () => {
             cashier: cashier.publicKey!,
             targetAccount: consumedOrders.publicKey,
           });
-        const createConsumedOrdersSignature = await cashier.sendTransaction(
-          consumedOrdersTx(),
-          connection,
-          { signers: [consumedOrders] }
-        );
+        await cashier.sendTransaction(consumedOrdersTx(), connection, {
+          signers: [consumedOrders],
+        });
         const cashRegisterTransaction = await cashRegisterTx(cashRegisterId);
-        const createCashRegisterSignature = await cashier.sendTransaction(
-          cashRegisterTransaction,
-          connection
-        );
+        await cashier.sendTransaction(cashRegisterTransaction, connection);
       }
     } catch (error) {
       console.log(JSON.stringify(error));
