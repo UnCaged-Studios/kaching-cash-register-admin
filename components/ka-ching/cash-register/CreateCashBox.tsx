@@ -85,7 +85,7 @@ export const CreateCashBox: FC = () => {
       <div>
         {showAddress ? (
           <>
-            <Typography variant="h3" gutterBottom>
+            <Typography variant="h6" gutterBottom>
               CashBox PublicKey: {JSON.stringify(cashBoxPubKey)}
             </Typography>
           </>
