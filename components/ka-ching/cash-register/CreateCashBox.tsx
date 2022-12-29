@@ -25,10 +25,7 @@ export const CreateCashBox: FC = () => {
 
         setCashBoxPubKey(cashBoxTransaction.instructions[0].keys[3].pubkey);
 
-        const createCashBoxSignature = await cashier.sendTransaction(
-          cashBoxTransaction,
-          connection
-        );
+        await cashier.sendTransaction(cashBoxTransaction, connection);
         setShowAddress(true);
       }
     } catch (error) {

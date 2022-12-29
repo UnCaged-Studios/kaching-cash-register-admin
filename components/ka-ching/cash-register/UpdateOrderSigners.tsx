@@ -43,7 +43,7 @@ export const UpdateOrderSignersWhitelist: FC = () => {
             updateType
           );
 
-        const updateOrderSignerslistSignature = await cashier.sendTransaction(
+        await cashier.sendTransaction(
           updateOrderSignerslistTransaction,
           connection
         );
@@ -91,7 +91,9 @@ export const UpdateOrderSignersWhitelist: FC = () => {
             label="Update Type"
             select
             value={updateType || ''}
-            onChange={(v) => setUpdateType(v.target.value)}
+            onChange={(v) =>
+              setUpdateType(v.target.value as 'merge' | 'override')
+            }
             size="small"
             required
             error={updateType === undefined}
