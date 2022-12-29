@@ -19,7 +19,6 @@ specifiers:
   react: 18.2.0
   react-dom: 18.2.0
   react-hook-form: ^7.40.0
-  tweetnacl: ^1.0.3
   typescript: 4.9.3
 
 dependencies:
@@ -41,7 +40,6 @@ dependencies:
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-hook-form: 7.40.0_react@18.2.0
-  tweetnacl: 1.0.3
   typescript: 4.9.3
 
 packages:
@@ -9540,10 +9538,6 @@ packages:
     dependencies:
       tslib: 1.14.1
       typescript: 4.9.3
-    dev: false
-
-  /tweetnacl/1.0.3:
-    resolution: {integrity: sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==}
     dev: false
 
   /type-check/0.4.0:

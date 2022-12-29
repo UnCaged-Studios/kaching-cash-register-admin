@@ -47,13 +47,9 @@ export const UpdateOrderSignersWhitelist: FC = () => {
           updateOrderSignerslistTransaction,
           connection
         );
-        console.log(
-          'updateOrderSignerslistSignature: ',
-          updateOrderSignerslistSignature
-        );
       }
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.log(JSON.stringify(error));
     }
   };
 

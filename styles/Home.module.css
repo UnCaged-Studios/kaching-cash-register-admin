@@ -11,11 +11,6 @@
   align-items: center;
 }
 
-.alignRight {
-  display: flex;
-  justify-content: flex-end;
-}
-
 .App {
   text-align: center;
   display: flex;
@@ -23,9 +18,4 @@
   justify-content: center;
   align-items: center;
   margin-top: 20px;
-}
-
-.dropdown {
-  padding: 5px;
-  margin: 5px;
 }

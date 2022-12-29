@@ -23,12 +23,10 @@ const updateEndpoint = [
 ];
 
 export const EndpointSettings: FC = () => {
-  const [endpoint, setEndpoint] = useState();
+  const [endpoint, setEndpoint] = useState('');
   const [displayInput, setDisplayInput] = useState(false);
   const { register, handleSubmit } = useForm();
   const handleChange = async (event: any) => {
-    console.log('event: ', event);
-
     if (event === 'custom') {
       setDisplayInput(true);
     } else {
@@ -38,7 +36,6 @@ export const EndpointSettings: FC = () => {
   };
   useEffect(() => {
     if (endpoint) {
-      console.log('endpoint: ', endpoint);
       setLocalStorage('endpoint', JSON.stringify(endpoint));
     }
   }, [endpoint]);
@@ -61,7 +58,7 @@ export const EndpointSettings: FC = () => {
           id="outlined-select-currency"
           label="Endpoint"
           select
-          value={endpoint || ''}
+          value={endpoint}
           onChange={(v) => handleChange(v.target.value)}
           size="small"
           required

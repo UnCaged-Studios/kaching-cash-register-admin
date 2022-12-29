@@ -21,38 +21,25 @@ export const CreateCashRegister: FC = () => {
         } else {
           cashRegisterId = cashRegId;
         }
-
         const consumedOrders = Keypair.generate();
-
         const { consumedOrdersTx, cashRegisterTx } =
           createCashRegisterTxBuilder({
             cashier: cashier.publicKey!,
             targetAccount: consumedOrders.publicKey,
           });
-
         const createConsumedOrdersSignature = await cashier.sendTransaction(
           consumedOrdersTx(),
           connection,
           { signers: [consumedOrders] }
         );
-        console.log(
-          'createConsumedOrdersSignature: ',
-          createConsumedOrdersSignature
-        );
-
         const cashRegisterTransaction = await cashRegisterTx(cashRegisterId);
-
         const createCashRegisterSignature = await cashier.sendTransaction(
           cashRegisterTransaction,
           connection
         );
-        console.log(
-          'createCashRegisterSignature: ',
-          createCashRegisterSignature
-        );
       }
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.log(JSON.stringify(error));
     }
   };
 

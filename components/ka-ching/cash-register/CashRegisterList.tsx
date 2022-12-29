@@ -5,7 +5,6 @@ import {
 } from '../../../utils/sdk';
 import { Connection } from '@solana/web3.js';
 import { getLocalStorage } from '../../../utils/localStorageHandle';
-
 import {
   Table,
   TableBody,
@@ -32,8 +31,8 @@ export const CashRegisterList: FC = () => {
         );
         setKaChindData(kaChingCashRegisters);
       }
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.log(JSON.stringify(error));
     }
   };
 
@@ -63,23 +62,23 @@ export const CashRegisterList: FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {kaChingData?.map((val, idx) => (
+                {kaChingData?.map((item, idx) => (
                   <TableRow
                     key={idx}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
-                    <TableCell>{val.address.toString()}</TableCell>
-                    <TableCell>{val.cashRegisterId}</TableCell>
-                    <TableCell>{val.cashierPublicKey.toString()}</TableCell>
-                    <TableCell
-                      sx={{
-                        maxWidth: 30,
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                      }}
-                    >
-                      {val.orderSignersWhitelist.toString()}
-                    </TableCell>
+                    {Object.values(item).map((val: any, id) => (
+                      <TableCell
+                        key={id}
+                        sx={{
+                          maxWidth: 30,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {val.toString()}
+                      </TableCell>
+                    ))}
                   </TableRow>
                 ))}
               </TableBody>
