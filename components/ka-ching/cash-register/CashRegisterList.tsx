@@ -55,10 +55,20 @@ export const CashRegisterList: FC = () => {
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell>Address</TableCell>
-                  <TableCell>CashRegisterId</TableCell>
-                  <TableCell>CashierPublicKey</TableCell>
-                  <TableCell>OrderSignersWhitelist</TableCell>
+                  {Object.keys(Object.assign({}, ...kaChingData)).map(
+                    (val, id) => (
+                      <TableCell
+                        key={id}
+                        sx={{
+                          maxWidth: 30,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {val.toString().charAt(0).toUpperCase() + val.slice(1)}
+                      </TableCell>
+                    )
+                  )}
                 </TableRow>
               </TableHead>
               <TableBody>
