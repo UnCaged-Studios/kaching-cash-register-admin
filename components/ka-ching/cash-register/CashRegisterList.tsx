@@ -34,24 +34,28 @@ export const CashRegisterList: FC = () => {
         );
 
         if (filter) {
-          const filterKaChingCashRegisters = kaChingCashRegisters.reduce(
-            (filtered, val) => {
-              if (
-                val.cashierPublicKey.toString() ===
-                cashier.publicKey?.toString()
-              ) {
-                const newValue = {
-                  address: val.address,
-                  cashRegisterId: val.cashRegisterId,
-                  cashierPublicKey: val.cashierPublicKey,
-                  orderSignersWhitelist: val.orderSignersWhitelist,
-                };
-                filtered.push(newValue);
-              }
-              return filtered;
-            },
-            []
-          );
+          const filterKaChingCashRegisters: KachingCashRegisterModel[] =
+            kaChingCashRegisters.reduce(
+              (
+                filtered: KachingCashRegisterModel[],
+                val: KachingCashRegisterModel
+              ) => {
+                if (
+                  val.cashierPublicKey.toString() ===
+                  cashier.publicKey?.toString()
+                ) {
+                  const newValue: KachingCashRegisterModel = {
+                    address: val.address,
+                    cashRegisterId: val.cashRegisterId,
+                    cashierPublicKey: val.cashierPublicKey,
+                    orderSignersWhitelist: val.orderSignersWhitelist,
+                  };
+                  filtered.push(newValue);
+                }
+                return filtered;
+              },
+              []
+            );
           setKaChindData(filterKaChingCashRegisters);
         } else {
           setKaChindData(kaChingCashRegisters);

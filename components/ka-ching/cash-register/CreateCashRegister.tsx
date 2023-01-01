@@ -8,20 +8,13 @@ import { createCashRegisterTxBuilder } from '../../../utils/sdk';
 
 export const CreateCashRegister: FC = () => {
   const cashier = useWallet();
-
   const [cashRegId, setCashRegId] = useState('');
 
   const createCashRegister = async () => {
     const endpoint = getLocalStorage('endpoint');
     try {
-      if (endpoint) {
+      if (endpoint && cashRegId) {
         const connection = new Connection(JSON.parse(endpoint!));
-        let cashRegisterId;
-        if (!cashRegId) {
-          cashRegisterId = generateRandomCashRegisterId();
-        } else {
-          cashRegisterId = cashRegId;
-        }
         const consumedOrders = Keypair.generate();
         const { consumedOrdersTx, cashRegisterTx } =
           createCashRegisterTxBuilder({
@@ -31,7 +24,7 @@ export const CreateCashRegister: FC = () => {
         await cashier.sendTransaction(consumedOrdersTx(), connection, {
           signers: [consumedOrders],
         });
-        const cashRegisterTransaction = await cashRegisterTx(cashRegisterId);
+        const cashRegisterTransaction = await cashRegisterTx(cashRegId);
         await cashier.sendTransaction(cashRegisterTransaction, connection);
       }
     } catch (error) {
@@ -51,10 +44,10 @@ export const CreateCashRegister: FC = () => {
             value={cashRegId}
             onChange={(v) => setCashRegId(v.target.value)}
             size="small"
+            required
+            error={cashRegId === ''}
             helperText={
-              cashRegId === ''
-                ? 'If empty then a random ID will be generated'
-                : ' '
+              cashRegId === '' ? 'Must Required CashRegister ID' : ' '
             }
           />
           <Button
@@ -73,12 +66,3 @@ export const CreateCashRegister: FC = () => {
     </div>
   );
 };
-
-const randomLowerCaseCharCode = () =>
-  [1, 2, 3]
-    .map(() => String.fromCharCode(97 + Math.floor(Math.random() * 25)))
-    .join('');
-
-export const generateRandomCashRegisterId = (
-  prefix: string = 'my_cash_register_'
-) => `${prefix}${randomLowerCaseCharCode()}`;
