@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import Link from 'next/link';
-import { FC } from 'react';
-import { navLinks } from '../utils/data';
+import type { FC } from 'react';
+import { navLinks } from '../routing/data';
 
 export const Navbar: FC = () => {
   return (

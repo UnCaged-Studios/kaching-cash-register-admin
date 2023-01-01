@@ -1,7 +1,8 @@
 import { Button, TextField } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Connection, Keypair } from '@solana/web3.js';
-import { FC, useState } from 'react';
+import { useState } from 'react';
+import type { FC } from 'react';
 import { getLocalStorage } from '../../../utils/localStorageHandle';
 import { createCashRegisterTxBuilder } from '../../../utils/sdk';
 
@@ -39,39 +40,37 @@ export const CreateCashRegister: FC = () => {
   };
 
   return (
-    <>
-      <div>
-        {cashier.connected ? (
-          <>
-            <TextField
-              sx={{ m: 1 }}
-              id="outlined-basic"
-              label="CashRegister ID"
-              variant="outlined"
-              value={cashRegId}
-              onChange={(v) => setCashRegId(v.target.value)}
-              size="small"
-              helperText={
-                cashRegId === ''
-                  ? 'If empty then a random ID will be generated'
-                  : ' '
-              }
-            />
-            <Button
-              sx={{ m: 1 }}
-              variant="contained"
-              onClick={() => {
-                createCashRegister();
-              }}
-            >
-              Create CashRegister
-            </Button>
-          </>
-        ) : (
-          <h1>You are not connected to the wallet</h1>
-        )}
-      </div>
-    </>
+    <div>
+      {cashier.connected ? (
+        <>
+          <TextField
+            sx={{ m: 1 }}
+            id="outlined-basic"
+            label="CashRegister ID"
+            variant="outlined"
+            value={cashRegId}
+            onChange={(v) => setCashRegId(v.target.value)}
+            size="small"
+            helperText={
+              cashRegId === ''
+                ? 'If empty then a random ID will be generated'
+                : ' '
+            }
+          />
+          <Button
+            sx={{ m: 1 }}
+            variant="contained"
+            onClick={() => {
+              createCashRegister();
+            }}
+          >
+            Create CashRegister
+          </Button>
+        </>
+      ) : (
+        <h1>You are not connected to the wallet</h1>
+      )}
+    </div>
   );
 };
 

@@ -1,6 +1,6 @@
 import { AppBar, Box, Toolbar } from '@mui/material';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { FC } from 'react';
+import type { FC } from 'react';
 import { EndpointSettings } from './ka-ching/EndpointSettings';
 
 export const Header: FC = () => {

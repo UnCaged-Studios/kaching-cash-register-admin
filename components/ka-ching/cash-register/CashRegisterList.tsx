@@ -1,4 +1,5 @@
-import { FC, useState } from 'react';
+import { useState } from 'react';
+import type { FC } from 'react';
 import {
   fetchAllKaChingCashRegisters,
   KachingCashRegisterModel,
@@ -38,7 +39,7 @@ export const CashRegisterList: FC = () => {
 
   const [displayForm, setDisplayForm] = useState(false);
   return (
-    <>
+    <div>
       <Button
         sx={{ m: 1 }}
         variant="contained"
@@ -96,6 +97,6 @@ export const CashRegisterList: FC = () => {
           </TableContainer>
         </div>
       )}
-    </>
+    </div>
   );
 };

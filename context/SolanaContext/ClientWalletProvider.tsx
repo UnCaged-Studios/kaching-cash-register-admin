@@ -11,11 +11,9 @@ export function ClientWalletProvider(
   const wallets = useMemo(() => [new PhantomWalletAdapter()], []);
 
   return (
-    <>
-      <WalletProvider wallets={wallets} {...props} autoConnect>
-        <WalletModalProvider {...props} />
-      </WalletProvider>
-    </>
+    <WalletProvider wallets={wallets} {...props} autoConnect>
+      <WalletModalProvider {...props} />
+    </WalletProvider>
   );
 }
 

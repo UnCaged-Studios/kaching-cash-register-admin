@@ -1,7 +1,8 @@
 import { Button, MenuItem, TextField } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey } from '@solana/web3.js';
-import { FC, useState } from 'react';
+import { useState } from 'react';
+import type { FC } from 'react';
 import { getLocalStorage } from '../../../utils/localStorageHandle';
 import { updateOrderSignersWhitelistTxBuilder } from '../../../utils/sdk';
 
@@ -54,7 +55,7 @@ export const UpdateOrderSignersWhitelist: FC = () => {
   };
 
   return (
-    <>
+    <div>
       {cashier.connected ? (
         <>
           <TextField
@@ -120,6 +121,6 @@ export const UpdateOrderSignersWhitelist: FC = () => {
       ) : (
         <h1>You are not connected to the wallet</h1>
       )}
-    </>
+    </div>
   );
 };

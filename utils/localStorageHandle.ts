@@ -3,6 +3,5 @@ export function setLocalStorage(key: string, value: any) {
 }
 
 export function getLocalStorage(key: string) {
-  const ls = window.localStorage.getItem(key);
-  return ls;
+  return window.localStorage.getItem(key);
 }

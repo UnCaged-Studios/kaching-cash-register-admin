@@ -14,19 +14,17 @@ const WalletProvider = dynamic(
 
 export const Layout = ({ children }: any) => {
   return (
-    <>
-      <div className="content">
-        <TopHead />
-        <WalletProvider>
-          <Logo />
-          <section id="dashboard">
-            <Header />
-            <Navbar />
-            <main> {children}</main>
-          </section>
-          <Footer />
-        </WalletProvider>
-      </div>
-    </>
+    <div className="content">
+      <TopHead />
+      <WalletProvider>
+        <Logo />
+        <section id="dashboard">
+          <Header />
+          <Navbar />
+          <main> {children}</main>
+        </section>
+        <Footer />
+      </WalletProvider>
+    </div>
   );
 };

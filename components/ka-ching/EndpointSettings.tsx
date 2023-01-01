@@ -1,4 +1,5 @@
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { setLocalStorage } from '../../utils/localStorageHandle';
 import { Box, MenuItem, TextField, Button } from '@mui/material';
@@ -40,61 +41,59 @@ export const EndpointSettings: FC = () => {
     }
   }, [endpoint]);
   return (
-    <>
-      <Box
-        component="form"
-        sx={{
-          '& > :not(style)': { m: 1, width: '25ch' },
-        }}
-        noValidate
-        autoComplete="off"
-        onSubmit={handleSubmit((inputEndpoint: any) => {
-          setEndpoint(inputEndpoint.input);
-          setDisplayInput(false);
-        })}
+    <Box
+      component="form"
+      sx={{
+        '& > :not(style)': { m: 1, width: '25ch' },
+      }}
+      noValidate
+      autoComplete="off"
+      onSubmit={handleSubmit((inputEndpoint: any) => {
+        setEndpoint(inputEndpoint.input);
+        setDisplayInput(false);
+      })}
+    >
+      <TextField
+        sx={{ m: 1 }}
+        id="outlined-select-currency"
+        label="Endpoint"
+        select
+        value={endpoint}
+        onChange={(v) => handleChange(v.target.value)}
+        size="small"
+        required
+        color="secondary"
       >
-        <TextField
-          sx={{ m: 1 }}
-          id="outlined-select-currency"
-          label="Endpoint"
-          select
-          value={endpoint}
-          onChange={(v) => handleChange(v.target.value)}
-          size="small"
-          required
-          color="secondary"
-        >
-          {updateEndpoint.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </TextField>
+        {updateEndpoint.map((option) => (
+          <MenuItem key={option.value} value={option.value}>
+            {option.label}
+          </MenuItem>
+        ))}
+      </TextField>
 
-        {displayInput && (
-          <>
-            <TextField
-              sx={{ m: 1 }}
-              id="outlined-basic"
-              label="Custom Endpoint"
-              variant="outlined"
-              {...register('input', { required: true })}
-              size="small"
-              required
-              color="secondary"
-            />
-            <Button
-              sx={{ m: 1 }}
-              type="submit"
-              variant="contained"
-              size="medium"
-              color="secondary"
-            >
-              Submit
-            </Button>
-          </>
-        )}
-      </Box>
-    </>
+      {displayInput && (
+        <>
+          <TextField
+            sx={{ m: 1 }}
+            id="outlined-basic"
+            label="Custom Endpoint"
+            variant="outlined"
+            {...register('input', { required: true })}
+            size="small"
+            required
+            color="secondary"
+          />
+          <Button
+            sx={{ m: 1 }}
+            type="submit"
+            variant="contained"
+            size="medium"
+            color="secondary"
+          >
+            Submit
+          </Button>
+        </>
+      )}
+    </Box>
   );
 };
