@@ -22,8 +22,8 @@ type cashBoxModel = {
 export const CreateCashBox: FC = () => {
   const cashier = useWallet();
   const [file, setFile] = useState();
-  const [csvArray, setCsvArray] = useState<cashBoxModel[]>([]);
-  const [cashBoxArr, setCashBoxArr] = useState<cashBoxModel[]>([]);
+  const [cashBoxArray, setCashBoxArray] = useState<cashBoxModel[]>([]);
+  const [allTransfers, setAllTransfers] = useState<cashBoxModel[]>([]);
   const [transfers, setTransfers] = useState<Transfer[] | undefined>(undefined);
   const [startFrom, setStartFrom] = useState<number | undefined>(undefined);
   const [limit, setLimit] = useState<number | undefined>(undefined);
@@ -45,7 +45,7 @@ export const CreateCashBox: FC = () => {
           const text = event.target.result;
           const array = await csvFileToArray(text);
           if (array!.length > 0) {
-            setCsvArray(array!);
+            setCashBoxArray(array!);
           }
         };
         fileReader.readAsText(file);
@@ -58,7 +58,7 @@ export const CreateCashBox: FC = () => {
   const createAndFetchCashBox = async () => {
     try {
       const endpoint = getLocalStorage('endpoint');
-      if (endpoint && csvArray.length > 0) {
+      if (endpoint && cashBoxArray.length > 0) {
         const connection = new Connection(JSON.parse(endpoint!));
 
         const { blockhash, lastValidBlockHeight } =
@@ -72,7 +72,7 @@ export const CreateCashBox: FC = () => {
 
         const arr: cashBoxModel[] = [];
         let cashRegistrId: string = '';
-        csvArray.forEach(
+        cashBoxArray.forEach(
           async ({ kaChingToken, mintToken, amount, decimal }) => {
             const [tokenCashboxPDA] = await findTokenCashboxPDA(
               kaChingToken,
@@ -103,7 +103,7 @@ export const CreateCashBox: FC = () => {
           }
         );
         await cashier.sendTransaction(transactionList, connection);
-        setCashBoxArr(arr);
+        setAllTransfers(arr);
       }
     } catch (error) {
       console.log(JSON.stringify(error));
@@ -116,7 +116,9 @@ export const CreateCashBox: FC = () => {
     const to = new PublicKey(transfer.kaChingToken);
     const tokenMint = new PublicKey(transfer.mintToken);
     // eslint-disable-next-line no-undef
-    const amount = BigInt(transfer.amount);
+    const amount = BigInt(
+      Number(transfer.amount) * Math.pow(10, Number(transfer.decimal))
+    );
     return {
       key: idx + 1,
       sourceAta: getAssociatedTokenAddressSync(tokenMint, cashier.publicKey),
@@ -134,12 +136,14 @@ export const CreateCashBox: FC = () => {
         startFrom &&
         startFrom > 0 &&
         startFrom <= limit! &&
-        limit! <= cashBoxArr.length &&
-        cashBoxArr
+        limit! <= allTransfers.length &&
+        allTransfers
       ) {
         const startFromIdx = Number(startFrom) - 1;
         setTransfers(
-          cashBoxArr?.slice(startFromIdx, startFromIdx + limit!).map(toTransfer)
+          allTransfers
+            ?.slice(startFromIdx, startFromIdx + limit!)
+            .map(toTransfer)
         );
         if (!transfers) throw new Error('missing transfers');
       }
@@ -172,9 +176,11 @@ export const CreateCashBox: FC = () => {
             </Button>
           </form>
           <br />
-          {csvArray && <span>CSV contains {csvArray.length} transfers</span>}
+          {cashBoxArray && (
+            <span>CSV contains {cashBoxArray.length} transfers</span>
+          )}
           <br />
-          {csvArray.length > 0 && (
+          {cashBoxArray.length > 0 && (
             <Button
               sx={{ m: 1 }}
               variant="contained"
@@ -185,9 +191,9 @@ export const CreateCashBox: FC = () => {
               Create & Fetch CashBox
             </Button>
           )}
-          {cashBoxArr.length > 0 && (
+          {allTransfers.length > 0 && (
             <>
-              <List arr={cashBoxArr} />
+              <List arr={allTransfers} />
               <TextField
                 sx={{ m: 1 }}
                 id="outlined-basic"
@@ -224,13 +230,13 @@ export const CreateCashBox: FC = () => {
                 required
                 error={
                   limit === undefined ||
-                  limit > csvArray.length ||
+                  limit > cashBoxArray.length ||
                   limit < startFrom!
                 }
                 helperText={
                   limit === undefined
                     ? 'Must Required Limit'
-                    : limit! > csvArray.length
+                    : limit! > cashBoxArray.length
                     ? 'The limit is too big'
                     : limit! < startFrom!
                     ? 'The limit is lower than the Start From'
