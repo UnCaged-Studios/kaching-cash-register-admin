@@ -24,7 +24,7 @@ const updateEndpoint = [
 ];
 
 export const EndpointSettings: FC = () => {
-  const [endpoint, setEndpoint] = useState('');
+  const [endpoint, setEndpoint] = useState();
   const [displayInput, setDisplayInput] = useState(false);
   const { register, handleSubmit } = useForm();
   const handleChange = async (event: any) => {
