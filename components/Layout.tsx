@@ -7,6 +7,7 @@ import { Footer } from './Footer';
 import { QueryClient, QueryClientProvider } from 'react-query';
 const queryClient = new QueryClient();
 
+
 const WalletProvider = dynamic(
   () => import('../context/SolanaContext/ClientWalletProvider'),
   {
