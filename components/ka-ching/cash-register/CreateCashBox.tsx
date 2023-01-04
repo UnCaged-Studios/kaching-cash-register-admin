@@ -1,18 +1,16 @@
 import { Box, Button, Input, TextField } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+import { Connection, PublicKey } from '@solana/web3.js';
 import { useState } from 'react';
 import type { FC } from 'react';
 import { getLocalStorage } from '../../../utils/localStorageHandle';
-import { createCashBoxTxBuilder } from '../../../utils/sdk';
 import { csvFileToArray } from '../../../utils/csvFileToArray';
 import { List } from '../../List';
-import { findTokenCashboxPDA } from '@uncaged-studios/solana-program-library-sdk/dist/sdk/ts/ka-ching/v1/create-token-cashbox';
 import { getAssociatedTokenAddressSync } from '@solana/spl-token';
-import { Space } from '@pankod/refine-antd';
 import { SignTransfersForm, Transfer } from '../../SignTransfersForm';
+import { cashBoxTxns } from '../../../utils/cashBoxTxns';
 
-type cashBoxModel = {
+export type cashBoxModel = {
   kaChingToken: string;
   mintToken: string;
   amount: string;
@@ -60,50 +58,11 @@ export const CreateCashBox: FC = () => {
       const endpoint = getLocalStorage('endpoint');
       if (endpoint && cashBoxArray.length > 0) {
         const connection = new Connection(JSON.parse(endpoint!));
-
-        const { blockhash, lastValidBlockHeight } =
-          await connection.getLatestBlockhash();
-
-        const transactionList = new Transaction({
-          blockhash: blockhash,
-          lastValidBlockHeight,
-          feePayer: cashier.publicKey!,
-        });
-
-        const arr: cashBoxModel[] = [];
-        let cashRegistrId: string = '';
-        cashBoxArray.forEach(
-          async ({ kaChingToken, mintToken, amount, decimal }) => {
-            const [tokenCashboxPDA] = await findTokenCashboxPDA(
-              kaChingToken,
-              new PublicKey(mintToken)
-            );
-            const tokenCashboxAccount = await connection.getAccountInfo(
-              tokenCashboxPDA
-            );
-            if (tokenCashboxAccount === null) {
-              const { cashBoxTx } = createCashBoxTxBuilder({
-                currency: new PublicKey(mintToken),
-                cashier: cashier.publicKey!,
-              });
-              const cashBoxTransaction = await cashBoxTx(kaChingToken);
-              cashRegistrId =
-                cashBoxTransaction.instructions[0].keys[3].pubkey.toString();
-              transactionList.add(cashBoxTransaction);
-            } else {
-              cashRegistrId = tokenCashboxPDA.toString();
-            }
-            const newValue: cashBoxModel = {
-              kaChingToken: cashRegistrId,
-              mintToken,
-              amount,
-              decimal,
-            };
-            arr.push(newValue);
-          }
-        );
-        await cashier.sendTransaction(transactionList, connection);
-        setAllTransfers(arr);
+        const tx = await cashBoxTxns(cashBoxArray, cashier.publicKey!);
+        if (tx!.transactionList.instructions.length > 0) {
+          await cashier.sendTransaction(tx!.transactionList, connection);
+        }
+        setAllTransfers(tx!.txArray);
       }
     } catch (error) {
       console.log(JSON.stringify(error));
@@ -195,7 +154,7 @@ export const CreateCashBox: FC = () => {
             <>
               <List arr={allTransfers} />
               <TextField
-                sx={{ m: 1 }}
+                sx={{ m: 1, marginTop: 3 }}
                 id="outlined-basic"
                 label="Start From"
                 variant="outlined"
@@ -220,9 +179,9 @@ export const CreateCashBox: FC = () => {
                 type={'number'}
               />
               <TextField
-                sx={{ m: 1 }}
+                sx={{ m: 1, marginTop: 3 }}
                 id="outlined-basic"
-                label="Start From"
+                label="Limit"
                 variant="outlined"
                 value={limit}
                 onChange={(v) => setLimit(Number(v.target.value))}
@@ -245,7 +204,7 @@ export const CreateCashBox: FC = () => {
                 type={'number'}
               />
               <Button
-                sx={{ m: 1 }}
+                sx={{ m: 1, marginTop: 3 }}
                 variant="contained"
                 onClick={() => {
                   createTransfers();
@@ -257,15 +216,10 @@ export const CreateCashBox: FC = () => {
           )}
           {transfers && (
             <Box sx={{ m: 1 }}>
-              <Space
-                direction="vertical"
-                style={{ width: '100%', margin: '1px' }}
-              >
-                <SignTransfersForm
-                  transfers={transfers!}
-                  cancel={() => setTransfers(undefined)}
-                />
-              </Space>
+              <SignTransfersForm
+                transfers={transfers!}
+                cancel={() => setTransfers(undefined)}
+              />
             </Box>
           )}
         </div>

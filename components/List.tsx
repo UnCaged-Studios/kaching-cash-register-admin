@@ -15,15 +15,9 @@ export const List = (props: { arr: any[] }) => {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
+              <TableCell>#</TableCell>
               {Object.keys(Object.assign({}, ...props.arr)).map((val, id) => (
-                <TableCell
-                  key={id}
-                  sx={{
-                    maxWidth: 30,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
+                <TableCell key={id} align="center">
                   {val.toString().charAt(0).toUpperCase() + val.slice(1)}
                 </TableCell>
               ))}
@@ -37,6 +31,9 @@ export const List = (props: { arr: any[] }) => {
                   '&:last-child td, &:last-child th': { border: 0 },
                 }}
               >
+                <TableCell component="th" scope="row">
+                  {idx + 1}
+                </TableCell>
                 {Object.values(item).map((val: any, id) => (
                   <TableCell
                     key={id}
@@ -45,6 +42,7 @@ export const List = (props: { arr: any[] }) => {
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                     }}
+                    align="center"
                   >
                     {val?.toString()}
                   </TableCell>

@@ -1,11 +1,3 @@
-import {
-  Button,
-  Form,
-  Icons,
-  Space,
-  Table,
-  Typography,
-} from '@pankod/refine-antd';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import {
@@ -16,6 +8,26 @@ import { useMutation, useQuery } from 'react-query';
 import { TransferToTableCell } from './TransferToTableCell';
 import { FC, ReactElement, useState } from 'react';
 import { getLocalStorage } from '../utils/localStorageHandle';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  FormControl,
+  FormGroup,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@mui/material';
+import {
+  WarningAmber,
+  CheckCircleOutline,
+  BorderOuter,
+} from '@mui/icons-material';
 
 export type Transfer = {
   key: number;
@@ -122,61 +134,77 @@ export const SignTransfersForm: FC<Props> = ({ transfers, cancel }) => {
   });
 
   return (
-    <Form layout="vertical">
-      <Form.Item>
-        <Table
-          loading={atasQuery.isLoading}
-          columns={[
-            {
-              title: '#',
-              render: ({ key }) => key,
-            },
-            {
-              title: 'To/ATA',
-              render: (transfer, _r, idx) => (
-                <TransferToTableCell
-                  shouldCreateAta={!atasQuery.data?.at(idx)}
-                  transfer={transfer}
-                />
-              ),
-            },
-            {
-              title: 'Token',
-              render: ({ tokenMint }) => tokenMint?.toBase58(),
-            },
-            {
-              title: 'Amount',
-              render: ({ amount, decimals }) => `${amount} / 1e${decimals}`,
-            },
-          ]}
-          dataSource={transfers}
-          pagination={false}
-        />
-      </Form.Item>
-      <Form.Item>
-        <Space>
+    <FormControl sx={{ width: '100%' }}>
+      <FormGroup>
+        {transfers.length === 0 ? (
+          atasQuery.isLoading
+        ) : (
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>#</TableCell>
+                  <TableCell align="center">To/ATA</TableCell>
+                  <TableCell align="center">Token</TableCell>
+                  <TableCell align="center">Amount</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {transfers.map((transfer, idx) => (
+                  <TableRow
+                    key={idx}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {idx + 1}
+                    </TableCell>
+                    <TableCell align="center">
+                      <TransferToTableCell
+                        shouldCreateAta={!atasQuery.data?.at(idx)}
+                        transfer={transfer}
+                      />
+                    </TableCell>
+                    <TableCell align="center">
+                      {transfer.tokenMint.toBase58()}
+                    </TableCell>
+                    <TableCell align="center">{`${transfer.amount} / 1e${transfer.decimals}`}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+      </FormGroup>
+      <FormGroup>
+        <Box sx={{ m: 1 }}>
           <Button
-            type="primary"
-            onClick={() => mutation.mutate()}
+            sx={{ m: 1, marginTop: 3 }}
+            variant="contained"
+            onClick={() => {
+              mutation.mutate();
+            }}
             disabled={mutation.isLoading}
           >
             Sign all transfers
           </Button>
+
           <Button
-            type="dashed"
-            onClick={() => cancel()}
+            sx={{ m: 1, marginTop: 3 }}
+            variant="contained"
+            onClick={() => {
+              cancel();
+            }}
             disabled={mutation.isLoading}
           >
-            cancel
+            Cancel
           </Button>
-          <Typography.Text
-            style={{ color: mutation.isError ? 'red' : undefined }}
-          >
+
+          <Typography style={{ color: mutation.isError ? 'red' : undefined }}>
             <span style={{ marginRight: '0.3em' }}>
-              {mutation.isLoading && <Icons.LoadingOutlined />}
-              {mutation.isError && <Icons.WarningOutlined />}
-              {mutation.isSuccess && <Icons.GoldOutlined />}
-              {mutation.isIdle && <Icons.BorderOuterOutlined />}
+              {mutation.isLoading && <CircularProgress />}
+              {mutation.isError && <WarningAmber />}
+              {mutation.isSuccess && <CheckCircleOutline />}
+              {mutation.isIdle && <BorderOuter />}
             </span>
 
             {mutation.isLoading && currentTxSig && (
@@ -194,9 +222,9 @@ export const SignTransfersForm: FC<Props> = ({ transfers, cancel }) => {
                 {mutation.error.name || 'Error'}: {mutation.error.message}
               </span>
             )}
-          </Typography.Text>
-        </Space>
-      </Form.Item>
-    </Form>
+          </Typography>
+        </Box>
+      </FormGroup>
+    </FormControl>
   );
 };

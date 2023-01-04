@@ -17,8 +17,8 @@ const WalletProvider = dynamic(
 export const Layout = ({ children }: any) => {
   return (
     <div className="content">
+      <TopHead />
       <QueryClientProvider client={queryClient}>
-        <TopHead />
         <WalletProvider>
           <Logo />
           <section id="dashboard">

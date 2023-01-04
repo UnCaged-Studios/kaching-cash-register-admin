@@ -1,5 +1,6 @@
-import { Icons, Tooltip, Typography } from '@pankod/refine-antd';
+import { Tooltip, Typography } from '@mui/material';
 import { Transfer } from './SignTransfersForm';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 type Props = {
   transfer: Transfer;
@@ -17,13 +18,13 @@ export function TransferToTableCell({
   return (
     <div>
       <div>
-        <Typography.Text strong>{to?.toBase58()}</Typography.Text>
+        <Typography variant="body2">{to?.toBase58()}</Typography>
       </div>
       <Tooltip title={tooltip}>
-        <Typography.Text style={{ color }}>
+        <Typography variant="body2" gutterBottom color={color}>
           <span style={{ marginRight: '0.2em' }}>{toAta?.toBase58()}</span>
-          {shouldCreateAta && <Icons.ExclamationCircleOutlined />}
-        </Typography.Text>
+          {shouldCreateAta && <ErrorOutlineIcon />}
+        </Typography>
       </Tooltip>
     </div>
   );
