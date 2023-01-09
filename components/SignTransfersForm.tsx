@@ -5,8 +5,7 @@ import {
   createTransferCheckedInstruction,
 } from '@solana/spl-token';
 import { useMutation, useQuery } from 'react-query';
-import { TransferToTableCell } from './TransferToTableCell';
-import { FC, ReactElement, useState } from 'react';
+import { FC, ReactElement, useContext, useState } from 'react';
 import { getLocalStorage } from '../utils/localStorageHandle';
 import {
   Box,
@@ -14,20 +13,10 @@ import {
   CircularProgress,
   FormControl,
   FormGroup,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Typography,
 } from '@mui/material';
-import {
-  WarningAmber,
-  CheckCircleOutline,
-  BorderOuter,
-} from '@mui/icons-material';
+import { WarningAmber, CheckCircleOutline } from '@mui/icons-material';
+import { ResultContext } from './ka-ching/cash-register/CreateCashBox';
 
 export type Transfer = {
   key: number;
@@ -60,6 +49,7 @@ const TransactionInfo = ({ txSig }: { txSig: string }): ReactElement => (
 );
 
 export const SignTransfersForm: FC<Props> = ({ transfers, cancel }) => {
+  const { setTxStatus } = useContext(ResultContext);
   const endpoint = getLocalStorage('endpoint');
   const connection = new Connection(JSON.parse(endpoint!));
   const { signTransaction, publicKey } = useWallet();
@@ -136,49 +126,8 @@ export const SignTransfersForm: FC<Props> = ({ transfers, cancel }) => {
   return (
     <FormControl sx={{ width: '100%' }}>
       <FormGroup>
-        {transfers.length === 0 ? (
-          atasQuery.isLoading
-        ) : (
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>#</TableCell>
-                  <TableCell align="center">To/ATA</TableCell>
-                  <TableCell align="center">Token</TableCell>
-                  <TableCell align="center">Amount</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {transfers.map((transfer, idx) => (
-                  <TableRow
-                    key={idx}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {idx + 1}
-                    </TableCell>
-                    <TableCell align="center">
-                      <TransferToTableCell
-                        shouldCreateAta={!atasQuery.data?.at(idx)}
-                        transfer={transfer}
-                      />
-                    </TableCell>
-                    <TableCell align="center">
-                      {transfer.tokenMint.toBase58()}
-                    </TableCell>
-                    <TableCell align="center">{`${transfer.amount} / 1e${transfer.decimals}`}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
-      </FormGroup>
-      <FormGroup>
-        <Box sx={{ m: 1 }}>
+        <Box>
           <Button
-            sx={{ m: 1, marginTop: 3 }}
             variant="contained"
             onClick={() => {
               mutation.mutate();
@@ -189,7 +138,7 @@ export const SignTransfersForm: FC<Props> = ({ transfers, cancel }) => {
           </Button>
 
           <Button
-            sx={{ m: 1, marginTop: 3 }}
+            sx={{ marginLeft: '10px' }}
             variant="contained"
             onClick={() => {
               cancel();
@@ -198,13 +147,11 @@ export const SignTransfersForm: FC<Props> = ({ transfers, cancel }) => {
           >
             Cancel
           </Button>
-
           <Typography style={{ color: mutation.isError ? 'red' : undefined }}>
             <span style={{ marginRight: '0.3em' }}>
               {mutation.isLoading && <CircularProgress />}
               {mutation.isError && <WarningAmber />}
               {mutation.isSuccess && <CheckCircleOutline />}
-              {mutation.isIdle && <BorderOuter />}
             </span>
 
             {mutation.isLoading && currentTxSig && (
@@ -213,14 +160,20 @@ export const SignTransfersForm: FC<Props> = ({ transfers, cancel }) => {
               </span>
             )}
             {mutation.isSuccess && currentTxSig && (
-              <span>
-                <TransactionInfo txSig={currentTxSig} /> (confirmed)
-              </span>
+              <>
+                {setTxStatus('PASS')}
+                <span>
+                  <TransactionInfo txSig={currentTxSig} /> (confirmed)
+                </span>
+              </>
             )}
             {mutation.isError && (
-              <span>
-                {mutation.error.name || 'Error'}: {mutation.error.message}
-              </span>
+              <>
+                {setTxStatus('ERROR')}
+                <span>
+                  {mutation.error.name || 'Error'}: {mutation.error.message}
+                </span>
+              </>
             )}
           </Typography>
         </Box>
