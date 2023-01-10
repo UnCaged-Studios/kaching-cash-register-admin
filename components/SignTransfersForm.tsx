@@ -16,7 +16,7 @@ import {
   Typography,
 } from '@mui/material';
 import { WarningAmber, CheckCircleOutline } from '@mui/icons-material';
-import { ResultContext } from './ka-ching/cash-register/CreateCashBox';
+import { CashBoxContext } from './ka-ching/cash-register/CreateCashBox';
 
 export type Transfer = {
   key: number;
@@ -49,7 +49,7 @@ const TransactionInfo = ({ txSig }: { txSig: string }): ReactElement => (
 );
 
 export const SignTransfersForm: FC<Props> = ({ transfers, cancel }) => {
-  const { setTxStatus } = useContext(ResultContext);
+  const { setTxStatus } = useContext(CashBoxContext);
   const endpoint = getLocalStorage('endpoint');
   const connection = new Connection(JSON.parse(endpoint!));
   const { signTransaction, publicKey } = useWallet();

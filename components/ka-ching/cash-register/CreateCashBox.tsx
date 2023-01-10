@@ -22,7 +22,7 @@ export type cashBoxModel = {
   status: string;
 };
 
-export const ResultContext = createContext<any>(undefined);
+export const CashBoxContext = createContext<any>(undefined);
 
 export const CreateCashBox: FC = () => {
   const cashier = useWallet();
@@ -157,11 +157,11 @@ export const CreateCashBox: FC = () => {
     <div>
       {cashier.connected ? (
         <div style={{ textAlign: 'center' }}>
-          <ResultContext.Provider
+          <CashBoxContext.Provider
             value={{ setFile, setShowImportBtn, resetValues }}
           >
             <CSVInput />
-          </ResultContext.Provider>
+          </CashBoxContext.Provider>
           {showImportBtn && (
             <Button
               sx={{ m: 1 }}
@@ -232,12 +232,12 @@ export const CreateCashBox: FC = () => {
           )}
           {transfers && showSignTxBtn && (
             <Box sx={{ m: 1 }}>
-              <ResultContext.Provider value={{ setTxStatus }}>
+              <CashBoxContext.Provider value={{ setTxStatus }}>
                 <SignTransfersForm
                   transfers={transfers!}
                   cancel={() => setTransfers(undefined)}
                 />
-              </ResultContext.Provider>
+              </CashBoxContext.Provider>
             </Box>
           )}
         </div>

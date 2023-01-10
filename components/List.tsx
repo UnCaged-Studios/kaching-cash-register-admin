@@ -22,7 +22,6 @@ export const List = (props: { arr: any[] }) => {
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
-    console.log('handleChangeRowsPerPage: ', rowsPerPage);
   };
   return (
     <div style={{ margin: '0.5rem', marginBottom: '-1rem' }}>

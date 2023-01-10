@@ -1,9 +1,9 @@
 import { Button, Typography } from '@mui/material';
 import { ChangeEvent, FC, useContext, useRef, useState } from 'react';
-import { ResultContext } from './ka-ching/cash-register/CreateCashBox';
+import { CashBoxContext } from './ka-ching/cash-register/CreateCashBox';
 
 export const CSVInput: FC = () => {
-  const { setFile, setShowImportBtn, resetValues } = useContext(ResultContext);
+  const { setFile, setShowImportBtn, resetValues } = useContext(CashBoxContext);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [show, setShow] = useState(false);
 
