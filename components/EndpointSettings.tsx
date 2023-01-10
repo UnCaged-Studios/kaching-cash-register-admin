@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { FC } from 'react';
 import { useForm } from 'react-hook-form';
-import { setLocalStorage } from '../../utils/localStorageHandle';
+import { setLocalStorage } from '../utils/localStorageHandle';
 import { Box, MenuItem, TextField, Button } from '@mui/material';
 
 const updateEndpoint = [
