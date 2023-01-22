@@ -1,6 +1,6 @@
 import { Button, TextField } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { Connection, Keypair } from '@solana/web3.js';
+import { Connection, Keypair, PublicKey } from '@solana/web3.js';
 import { useState } from 'react';
 import type { FC } from 'react';
 import { getLocalStorage } from '../../../utils/localStorageHandle';
@@ -15,14 +15,16 @@ export const CreateCashRegister: FC = () => {
     try {
       if (endpoint && cashRegId) {
         const connection = new Connection(JSON.parse(endpoint!));
-        const consumedOrders = Keypair.generate();
+        const orderSignersWhitelist: Array<PublicKey> = [];
+        const consumedOrdersAccount = Keypair.generate();
         const { consumedOrdersTx, cashRegisterTx } =
           createCashRegisterTxBuilder({
             cashier: cashier.publicKey!,
-            targetAccount: consumedOrders.publicKey,
+            consumedOrdersAccount: consumedOrdersAccount.publicKey,
+            orderSignersWhitelist,
           });
         await cashier.sendTransaction(consumedOrdersTx(), connection, {
-          signers: [consumedOrders],
+          signers: [consumedOrdersAccount],
         });
         const cashRegisterTransaction = await cashRegisterTx(cashRegId);
         await cashier.sendTransaction(cashRegisterTransaction, connection);
