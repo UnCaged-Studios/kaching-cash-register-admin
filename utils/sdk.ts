@@ -54,10 +54,12 @@ export const customerSDK = createCustomerSDK();
 
 export const createCashRegisterTxBuilder = ({
   cashier,
-  targetAccount,
+  consumedOrdersAccount,
+  orderSignersWhitelist,
 }: {
   cashier: PublicKey;
-  targetAccount: PublicKey;
+  consumedOrdersAccount: PublicKey;
+  orderSignersWhitelist: Array<PublicKey>;
 }) => {
   const { createAccountParams, cashRegisterInitParams } =
     adminSDK.CreateConsumedOrdersAccount.createParams();
@@ -66,7 +68,7 @@ export const createCashRegisterTxBuilder = ({
       const createConsumedOrdersAccountIx =
         adminSDK.CreateConsumedOrdersAccount.createTx(
           cashier,
-          targetAccount,
+          consumedOrdersAccount,
           LAMPORTS_PER_SOL * 0.63, // 0.62670624 is Rent-exempt minimum for 89916 bytes
           createAccountParams
         );
@@ -76,9 +78,9 @@ export const createCashRegisterTxBuilder = ({
       return adminSDK.CreateCashRegister.createTx({
         cashier,
         cashRegisterId,
-        orderSignersWhitelist: [cashier],
+        orderSignersWhitelist,
         consumedOrders: {
-          account: targetAccount,
+          account: consumedOrdersAccount,
           ...cashRegisterInitParams,
         },
       });
