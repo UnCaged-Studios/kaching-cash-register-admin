@@ -1,3 +1,4 @@
+import { WalletContextState } from '@solana/wallet-adapter-react';
 import { PublicKey, Connection, Transaction } from '@solana/web3.js';
 import { findTokenCashboxPDA } from '@uncaged-studios/solana-program-library-sdk/dist/sdk/ts/ka-ching/v1/create-token-cashbox';
 import { cashBoxModel } from '../components/ka-ching/cash-register/CreateCashBox';
@@ -6,18 +7,19 @@ import { createCashBoxTxBuilder } from './sdk';
 
 export const cashBoxTxns = async (
   cashBoxArray: cashBoxModel[],
-  publicKey: PublicKey
+  cashier: WalletContextState
 ) => {
   const endpoint = getLocalStorage('endpoint');
   if (endpoint && cashBoxArray.length > 0) {
     const connection = new Connection(JSON.parse(endpoint!));
     const { blockhash, lastValidBlockHeight } =
       await connection.getLatestBlockhash();
-    const transactionList = new Transaction({
+    let transactionList = new Transaction({
       blockhash: blockhash,
       lastValidBlockHeight,
-      feePayer: publicKey,
+      feePayer: cashier.publicKey,
     });
+    let count = 0;
     const txArray = await Promise.all(
       cashBoxArray.map(async ({ kaChingToken, mintToken, amount, decimal }) => {
         let cashRegistrId: string = '';
@@ -31,7 +33,7 @@ export const cashBoxTxns = async (
         if (tokenCashboxAccount === null) {
           const { cashBoxTx } = createCashBoxTxBuilder({
             currency: new PublicKey(mintToken),
-            cashier: publicKey,
+            cashier: cashier.publicKey!,
           });
           const cashBoxTransaction = await cashBoxTx(kaChingToken);
           cashRegistrId =
@@ -45,10 +47,24 @@ export const cashBoxTxns = async (
           mintToken,
           amount,
           decimal,
+          status: 'WATING',
         };
+        count++;
+        if (
+          transactionList.instructions.length > 0 &&
+          (count === cashBoxArray.length || count / 10 === 1)
+        ) {
+          await cashier.sendTransaction(transactionList, connection);
+          transactionList = new Transaction({
+            blockhash: blockhash,
+            lastValidBlockHeight,
+            feePayer: cashier.publicKey,
+          });
+          count = 0;
+        }
         return newValue;
       })
     );
-    return { txArray, transactionList };
+    return txArray;
   }
 };
