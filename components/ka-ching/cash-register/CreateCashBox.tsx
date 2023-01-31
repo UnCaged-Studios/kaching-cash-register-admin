@@ -1,7 +1,7 @@
 import { Box, Button, Input, TextField } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey } from '@solana/web3.js';
-import { useState } from 'react';
+import { createContext, useState } from 'react';
 import type { FC } from 'react';
 import { getLocalStorage } from '../../../utils/localStorageHandle';
 import { csvFileToArray } from '../../../utils/csvFileToArray';
@@ -16,6 +16,8 @@ export type cashBoxModel = {
   amount: string;
   decimal: string;
 };
+
+export const CashBoxContext = createContext<any>(undefined);
 
 export const CreateCashBox: FC = () => {
   const cashier = useWallet();
