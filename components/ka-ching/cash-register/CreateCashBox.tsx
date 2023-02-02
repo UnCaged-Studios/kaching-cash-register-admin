@@ -100,11 +100,11 @@ export const CreateCashBox: FC = () => {
       if (
         allTransfers &&
         startFrom > 0 &&
-        startFrom <= Math.ceil(allTransfers.length / 10)
+        startFrom <= Math.ceil(allTransfers.length / 6)
       ) {
-        const startFromIdx = (startFrom - 1) * 10;
+        const startFromIdx = (startFrom - 1) * 6;
         setTransfers(
-          allTransfers?.slice(startFromIdx, startFromIdx + 10).map(toTransfer)
+          allTransfers?.slice(startFromIdx, startFromIdx + 6).map(toTransfer)
         );
         if (!transfers) throw new Error('missing transfers');
       }
@@ -114,7 +114,7 @@ export const CreateCashBox: FC = () => {
   };
 
   useEffect(() => {
-    const startIdx = (startFrom! - 1) * 10;
+    const startIdx = (startFrom! - 1) * 6;
     const endIdx = transfers?.length;
     let status;
     if (allTransfers && txStatus) {
@@ -179,15 +179,15 @@ export const CreateCashBox: FC = () => {
               <Typography color={'black'}>
                 {' '}
                 {startFrom > 0 &&
-                startFrom <= Math.ceil(allTransfers.length / 10)
+                startFrom <= Math.ceil(allTransfers.length / 6)
                   ? 'Batch No ' +
                     startFrom +
                     ' : from line ' +
-                    (startFrom * 10 - 9) +
+                    (startFrom * 6 - 5) +
                     ' to line ' +
-                    (startFrom * 10 > allTransfers.length
+                    (startFrom * 6 > allTransfers.length
                       ? allTransfers.length
-                      : startFrom * 10)
+                      : startFrom * 6)
                   : ''}
               </Typography>
               <br />
@@ -204,13 +204,13 @@ export const CreateCashBox: FC = () => {
                 required
                 error={
                   startFrom === undefined ||
-                  startFrom > Math.ceil(allTransfers.length / 10) ||
+                  startFrom > Math.ceil(allTransfers.length / 6) ||
                   startFrom <= 0
                 }
                 helperText={
                   startFrom === undefined || startFrom === 0
                     ? 'Must Choose Batch'
-                    : startFrom > Math.ceil(allTransfers.length / 10)
+                    : startFrom > Math.ceil(allTransfers.length / 6)
                     ? 'The Batch you selected does not exist'
                     : startFrom < 0
                     ? 'The Batch you selected does not exist'

@@ -52,7 +52,7 @@ export const cashBoxTxns = async (
         count++;
         if (
           transactionList.instructions.length > 0 &&
-          (count === cashBoxArray.length || count / 10 === 1)
+          (count === cashBoxArray.length || count / 6 <= 1)
         ) {
           await cashier.sendTransaction(transactionList, connection);
           transactionList = new Transaction({
