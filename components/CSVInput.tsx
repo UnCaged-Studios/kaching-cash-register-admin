@@ -1,18 +1,29 @@
 import { Button, Typography } from '@mui/material';
 import { ChangeEvent, FC, useContext, useRef, useState } from 'react';
+import { CsvDataService } from '../utils/csv-data.service';
+import { csvFileToArray } from '../utils/csvFileToArray';
 import { CashBoxContext } from './ka-ching/cash-register/CreateCashBox';
 
 export const CSVInput: FC = () => {
-  const { setFile, setShowImportBtn, resetValues } = useContext(CashBoxContext);
+  const { setFile, setCsvArr, setShowPartOne, setShowPartTwo, resetValues } =
+    useContext(CashBoxContext);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [show, setShow] = useState(false);
+  const [showWarning, setShowWarning] = useState<boolean>(false);
+  const csvTemplate = [
+    {
+      cashRegisterID: '--ID Here--',
+      mintAddress: '--Mint Here--',
+      amount: '--Amount Here--',
+      decimal: '--Decimal Here--',
+    },
+  ];
 
   const handleUploadClick = () => {
     resetValues();
     inputRef.current?.click();
   };
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     try {
       if (!e.target.files) {
         return;
@@ -20,12 +31,18 @@ export const CSVInput: FC = () => {
       const fileName = e.target.files[0].name;
       const startsWith = fileName.startsWith('cb_');
       if (startsWith) {
-        setShow(true);
-        setShowImportBtn(true);
+        setShowWarning(true);
+        setShowPartOne(false);
+        setShowPartTwo(true);
         setFile(e.target.files[0]);
+        const csvArr = await csvFileToArray(
+          (await e.target.files[0].text()).toString()
+        );
+        setCsvArr(csvArr);
       } else {
-        setShow(false);
-        setShowImportBtn(false);
+        setShowWarning(false);
+        setShowPartOne(true);
+        setShowPartTwo(false);
       }
     } catch (error) {
       console.log(JSON.stringify(error));
@@ -35,7 +52,7 @@ export const CSVInput: FC = () => {
   return (
     <div>
       <Button sx={{ m: 1 }} variant="contained" onClick={handleUploadClick}>
-        {'Select & import csv'}
+        {'Import CSV'}
       </Button>
       <br />
       <input
@@ -45,11 +62,22 @@ export const CSVInput: FC = () => {
         style={{ display: 'none' }}
         accept={'.csv'}
       />
-      {!show && (
-        <Typography color={'red'}>
-          The file name must start with &quot;cb_ &quot; and must end with the
-          suffix &quot;.csv&quot;
-        </Typography>
+      {!showWarning && (
+        <div>
+          <Typography color={'red'}>
+            The file name must start with &quot;cb_ &quot; and must end with the
+            suffix &quot;.csv&quot;
+          </Typography>
+          <Button
+            sx={{ m: 1 }}
+            variant="contained"
+            onClick={() => {
+              CsvDataService.exportToCsv('cb_csvTemplate.csv', csvTemplate);
+            }}
+          >
+            download csv template
+          </Button>
+        </div>
       )}
     </div>
   );

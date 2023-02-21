@@ -1,10 +1,7 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import {
-  createAssociatedTokenAccountInstruction,
-  createTransferCheckedInstruction,
-} from '@solana/spl-token';
-import { useMutation, useQuery } from 'react-query';
+import { createTransferCheckedInstruction } from '@solana/spl-token';
+import { useMutation } from 'react-query';
 import { FC, ReactElement, useContext, useState } from 'react';
 import { getLocalStorage } from '../utils/localStorageHandle';
 import {
@@ -55,21 +52,13 @@ export const SignTransfersForm: FC<Props> = ({ transfers, cancel }) => {
   const { signTransaction, publicKey } = useWallet();
   const [currentTxSig, setCurrentTxSig] = useState<string | undefined>();
 
-  const atasQuery = useQuery(['solana-transfers-atas'], async () => {
-    return await connection.getMultipleAccountsInfo(
-      transfers.map(({ toAta }) => toAta)
-    );
-  });
-
   const mutation = useMutation<string, Error>({
     mutationFn: async () => {
       const { blockhash, lastValidBlockHeight } =
         await connection.getLatestBlockhash();
-      const atas = atasQuery.data;
       if (!transfers) throw new Error('missing transfers');
       if (!publicKey) throw new Error('missing publicKey');
       if (!signTransaction) throw new Error('missing signTransaction');
-      if (!atas) throw new Error('missing atas');
 
       setCurrentTxSig(undefined);
       const tx = new Transaction({
@@ -77,34 +66,19 @@ export const SignTransfersForm: FC<Props> = ({ transfers, cancel }) => {
         lastValidBlockHeight,
         feePayer: publicKey,
       });
-      const createdAtas: string[] = [];
 
-      transfers.forEach(
-        ({ sourceAta, to, toAta, tokenMint, amount, decimals }, idx) => {
-          const ata = atas[idx];
-          if (!ata && !createdAtas.includes(toAta.toBase58())) {
-            createdAtas.push(toAta.toBase58());
-            tx.add(
-              createAssociatedTokenAccountInstruction(
-                publicKey,
-                toAta,
-                to,
-                tokenMint
-              )
-            );
-          }
-          const ix = createTransferCheckedInstruction(
-            sourceAta,
-            tokenMint,
-            toAta,
-            publicKey,
-            // eslint-disable-next-line no-undef
-            BigInt(amount),
-            decimals
-          );
-          tx.add(ix);
-        }
-      );
+      transfers.forEach(({ sourceAta, to, tokenMint, amount, decimals }) => {
+        const ix = createTransferCheckedInstruction(
+          sourceAta,
+          tokenMint,
+          to,
+          publicKey,
+          // eslint-disable-next-line no-undef
+          BigInt(amount),
+          decimals
+        );
+        tx.add(ix);
+      });
       const signed = await signTransaction(tx);
       const serialized = signed.serialize();
       if (serialized.length > MAX_TRANSACTION_SIZE)
@@ -119,7 +93,7 @@ export const SignTransfersForm: FC<Props> = ({ transfers, cancel }) => {
         lastValidBlockHeight,
         signature,
       });
-      return signature;
+      return 'test';
     },
   });
 
@@ -136,7 +110,6 @@ export const SignTransfersForm: FC<Props> = ({ transfers, cancel }) => {
           >
             Sign all transfers
           </Button>
-
           <Button
             sx={{ marginLeft: '10px' }}
             variant="contained"

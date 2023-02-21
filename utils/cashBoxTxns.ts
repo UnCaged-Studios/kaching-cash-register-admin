@@ -1,12 +1,15 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { PublicKey, Connection, Transaction } from '@solana/web3.js';
 import { findTokenCashboxPDA } from '@uncaged-studios/solana-program-library-sdk/dist/sdk/ts/ka-ching/v1/create-token-cashbox';
-import { cashBoxModel } from '../components/ka-ching/cash-register/CreateCashBox';
+import {
+  cashBoxModel,
+  cashRegisterModel,
+} from '../components/ka-ching/cash-register/CreateCashBox';
 import { getLocalStorage } from './localStorageHandle';
 import { createCashBoxTxBuilder } from './sdk';
 
 export const cashBoxTxns = async (
-  cashBoxArray: cashBoxModel[],
+  cashBoxArray: cashRegisterModel[],
   cashier: WalletContextState
 ) => {
   const endpoint = getLocalStorage('endpoint');
@@ -19,51 +22,51 @@ export const cashBoxTxns = async (
       lastValidBlockHeight,
       feePayer: cashier.publicKey,
     });
-    let count = 0;
     const txArray = await Promise.all(
-      cashBoxArray.map(async ({ kaChingToken, mintToken, amount, decimal }) => {
-        let cashRegistrId: string = '';
-        const [tokenCashboxPDA] = await findTokenCashboxPDA(
-          kaChingToken,
-          new PublicKey(mintToken)
-        );
-        const tokenCashboxAccount = await connection.getAccountInfo(
-          tokenCashboxPDA
-        );
-        if (tokenCashboxAccount === null) {
-          const { cashBoxTx } = createCashBoxTxBuilder({
-            currency: new PublicKey(mintToken),
-            cashier: cashier.publicKey!,
-          });
-          const cashBoxTransaction = await cashBoxTx(kaChingToken);
-          cashRegistrId =
-            cashBoxTransaction.instructions[0].keys[3].pubkey.toString();
-          transactionList.add(cashBoxTransaction);
-        } else {
-          cashRegistrId = tokenCashboxPDA.toString();
+      cashBoxArray.map(
+        async ({ cashRegisterID, mintAddress, amount, decimal }, idx) => {
+          let cashBoxAddress;
+          const [tokenCashboxPDA] = await findTokenCashboxPDA(
+            cashRegisterID,
+            new PublicKey(mintAddress)
+          );
+          const tokenCashboxAccount = await connection.getAccountInfo(
+            tokenCashboxPDA
+          );
+          if (tokenCashboxAccount === null) {
+            const { cashBoxTx } = createCashBoxTxBuilder({
+              currency: new PublicKey(mintAddress),
+              cashier: cashier.publicKey!,
+            });
+            const cashBoxTransaction = await cashBoxTx(cashRegisterID);
+            cashBoxAddress =
+              cashBoxTransaction.instructions[0].keys[3].pubkey.toString();
+            transactionList.add(cashBoxTransaction);
+          } else {
+            cashBoxAddress = tokenCashboxPDA.toString();
+          }
+          const newValue: cashBoxModel = {
+            cashBoxAddress,
+            mintAddress,
+            amount,
+            decimal,
+            status: 'WATING',
+          };
+          if (
+            transactionList.instructions.length > 0 &&
+            (idx + 1 === cashBoxArray.length ||
+              transactionList.instructions.length / 6 === 1)
+          ) {
+            await cashier.sendTransaction(transactionList, connection);
+            transactionList = new Transaction({
+              blockhash: blockhash,
+              lastValidBlockHeight,
+              feePayer: cashier.publicKey,
+            });
+          }
+          return newValue;
         }
-        const newValue: cashBoxModel = {
-          kaChingToken: cashRegistrId,
-          mintToken,
-          amount,
-          decimal,
-          status: 'WATING',
-        };
-        count++;
-        if (
-          transactionList.instructions.length > 0 &&
-          (count === cashBoxArray.length || count / 10 === 1)
-        ) {
-          await cashier.sendTransaction(transactionList, connection);
-          transactionList = new Transaction({
-            blockhash: blockhash,
-            lastValidBlockHeight,
-            feePayer: cashier.publicKey,
-          });
-          count = 0;
-        }
-        return newValue;
-      })
+      )
     );
     return txArray;
   }
