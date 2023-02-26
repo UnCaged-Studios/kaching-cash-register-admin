@@ -23,6 +23,10 @@ export const CSVInput: FC = () => {
     inputRef.current?.click();
   };
 
+  function removeEmptyRows(value:any) { 
+    return value.amount !== undefined; 
+  } 
+
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     try {
       if (!e.target.files) {
@@ -38,7 +42,7 @@ export const CSVInput: FC = () => {
         const csvArr = await csvFileToArray(
           (await e.target.files[0].text()).toString()
         );
-        setCsvArr(csvArr);
+        setCsvArr(csvArr!.filter(removeEmptyRows));
       } else {
         setShowWarning(false);
         setShowPartOne(true);

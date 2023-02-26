@@ -123,7 +123,7 @@ export const CreateCashBox: FC = () => {
     const tokenMint = new PublicKey(transfer.mintAddress);
     // eslint-disable-next-line no-undef
     const amount = BigInt(
-      Number(transfer.amount) * Math.pow(10, Number(transfer.decimal))
+      Number(transfer.amount) * Math.pow(6, Number(transfer.decimal))
     );
     return {
       key: idx + 1,
@@ -254,13 +254,13 @@ export const CreateCashBox: FC = () => {
                   required
                   error={
                     startFrom === undefined ||
-                    startFrom > Math.ceil(allTransfers.length / 10) ||
+                    startFrom > Math.ceil(allTransfers.length / 6) ||
                     startFrom <= 0
                   }
                   helperText={
                     startFrom === undefined || startFrom === 0
                       ? 'Must Choose Batch'
-                      : startFrom > Math.ceil(allTransfers.length / 10)
+                      : startFrom > Math.ceil(allTransfers.length / 6)
                       ? 'The Batch you selected does not exist'
                       : startFrom < 0
                       ? 'The Batch you selected does not exist'

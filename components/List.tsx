@@ -12,7 +12,7 @@ import { ChangeEvent, useRef, useState } from 'react';
 
 export const List = (props: { arr: any[] }) => {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(6);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -49,7 +49,7 @@ export const List = (props: { arr: any[] }) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={idx}>
                     <TableCell component="th" scope="row" ref={inputRef}>
-                      {page * 10 + idx + 1}
+                      {page * 6 + idx + 1}
                     </TableCell>
                     {Object.values(item).map((val: any, id) => {
                       return (
@@ -73,7 +73,7 @@ export const List = (props: { arr: any[] }) => {
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[10]}
+        rowsPerPageOptions={[6]}
         component="div"
         count={props.arr.length}
         rowsPerPage={rowsPerPage}
