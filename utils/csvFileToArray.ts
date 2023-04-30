@@ -4,7 +4,7 @@ export const csvFileToArray = async (csvTable: string) => {
     
     const csvHeader = csvTable.slice(0, csvTable.indexOf('\n') -1).split(',');
   
-    const csvRows = csvTable.slice(csvTable.indexOf('\n') + 1).split('\n');
+    const csvRows = csvTable.slice(csvTable.indexOf('\n')).split('\n');
     return csvRows.map((i) => {
       const values = i.split(',');
       const obj = csvHeader.reduce((object: any, header, index) => {
