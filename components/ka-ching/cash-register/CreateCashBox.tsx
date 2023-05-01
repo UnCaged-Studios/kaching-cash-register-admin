@@ -92,7 +92,7 @@ export const CreateCashBox: FC = () => {
         setShowPartThree(true);
       }
     } catch (error) {
-      console.log(JSON.stringify(error));
+      console.log(error);
     }
   };
 
@@ -112,7 +112,7 @@ export const CreateCashBox: FC = () => {
         if (!transfers) throw new Error('missing transfers');
       }
     } catch (error) {
-      console.log(JSON.stringify(error));
+      console.log(error);
     }
   };
 

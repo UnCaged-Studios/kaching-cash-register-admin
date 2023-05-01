@@ -24,16 +24,10 @@ const updateEndpoint = [
 ];
 
 export const EndpointSettings: FC = () => {
-  const [endpoint, setEndpoint] = useState();
-  const [displayInput, setDisplayInput] = useState(false);
+  const [endpoint, setEndpoint] = useState('https://api.devnet.solana.com');
   const { register, handleSubmit } = useForm();
   const handleChange = async (event: any) => {
-    if (event === 'custom') {
-      setDisplayInput(true);
-    } else {
-      setDisplayInput(false);
-      setEndpoint(event);
-    }
+    setEndpoint(event);
   };
   useEffect(() => {
     if (endpoint) {
@@ -49,8 +43,9 @@ export const EndpointSettings: FC = () => {
       noValidate
       autoComplete="off"
       onSubmit={handleSubmit((inputEndpoint: any) => {
-        setEndpoint(inputEndpoint.input);
-        setDisplayInput(false);
+        console.log('Endpoint provided: ', inputEndpoint.input);
+        setLocalStorage('endpoint', JSON.stringify(inputEndpoint.input));
+        setEndpoint('custom');
       })}
     >
       <TextField
@@ -71,7 +66,7 @@ export const EndpointSettings: FC = () => {
         ))}
       </TextField>
 
-      {displayInput && (
+      {endpoint === 'custom' ? (
         <>
           <TextField
             sx={{ m: 1 }}
@@ -93,7 +88,7 @@ export const EndpointSettings: FC = () => {
             Submit
           </Button>
         </>
-      )}
+      ) : null}
     </Box>
   );
 };
