@@ -1,19 +1,19 @@
-import { Box, Button, TextField, Typography } from '@mui/material';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { createContext, useEffect, useState } from 'react';
-import type { FC } from 'react';
-import { csvFileToArray } from '../../../utils/csvFileToArray';
-import { List } from '../../List';
-import { cashBoxTxns } from '../../../utils/cashBoxTxns';
-import { CSVInput } from '../../CSVInput';
+import { Box, Button, TextField, Typography } from "@mui/material";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { createContext, useEffect, useState } from "react";
+import type { FC } from "react";
+import { csvFileToArray } from "../../../utils/csvFileToArray";
+import { List } from "../../List";
+import { cashBoxTxns } from "../../../utils/cashBoxTxns";
+import { CSVInput } from "../../CSVInput";
 import {
   getLocalStorage,
   setLocalStorage,
-} from '../../../utils/localStorageHandle';
-import { CsvDataService } from '../../../utils/csv-data.service';
-import { SignTransfersForm, Transfer } from '../../SignTransfersForm';
-import { PublicKey } from '@solana/web3.js';
-import { getAssociatedTokenAddressSync } from '@solana/spl-token';
+} from "../../../utils/localStorageHandle";
+import { CsvDataService } from "../../../utils/csv-data.service";
+import { SignTransfersForm, Transfer } from "../../SignTransfersForm";
+import { PublicKey } from "@solana/web3.js";
+import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 
 export type cashBoxModel = {
   cashBoxAddress: string;
@@ -109,16 +109,16 @@ export const CreateCashBox: FC = () => {
         setTransfers(
           allTransfers?.slice(startFromIdx, startFromIdx + 6).map(toTransfer)
         );
-        if (!transfers) throw new Error('missing transfers');
+        if (!transfers) throw new Error("missing transfers");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   const toTransfer = (transfer: cashBoxModel, idx: number): Transfer => {
     if (!cashier.publicKey)
-      throw new Error('no publicKey. Is wallet connected?');
+      throw new Error("no publicKey. Is wallet connected?");
     const to = new PublicKey(transfer.cashBoxAddress);
     const tokenMint = new PublicKey(transfer.mintAddress);
     // eslint-disable-next-line no-undef
@@ -160,7 +160,7 @@ export const CreateCashBox: FC = () => {
       if (file) {
         // Upload the file to local storage
         const csvStr = [
-          ['cashBoxAddress', 'mintAddress', 'amount', 'decimal', 'status'],
+          ["cashBoxAddress", "mintAddress", "amount", "decimal", "status"],
           ...allTransfers.map((item) => [
             item.cashBoxAddress,
             item.mintAddress,
@@ -169,8 +169,8 @@ export const CreateCashBox: FC = () => {
             item.status,
           ]),
         ]
-          .map((e) => e.join(','))
-          .join('\n');
+          .map((e) => e.join(","))
+          .join("\n");
         setLocalStorage(file.name, csvStr);
       }
       setTxStatus(undefined);
@@ -181,7 +181,7 @@ export const CreateCashBox: FC = () => {
   return (
     <div>
       {cashier.connected ? (
-        <div style={{ textAlign: 'center' }}>
+        <div style={{ textAlign: "center" }}>
           {showPartOne && (
             <>
               {/* Part One - Import CSV + Download CSV Template */}
@@ -222,23 +222,23 @@ export const CreateCashBox: FC = () => {
               <Button
                 variant="contained"
                 onClick={() => {
-                  CsvDataService.exportToCsv('cb_list.csv', allTransfers!);
+                  CsvDataService.exportToCsv("cb_list.csv", allTransfers!);
                 }}
               >
                 download cashbox csv file
               </Button>
-              <Typography sx={{ m: 1 }} color={'black'}>
+              <Typography sx={{ m: 1 }} color={"black"}>
                 {startFrom > 0 &&
                 startFrom <= Math.ceil(allTransfers.length / 6)
-                  ? 'Batch No ' +
+                  ? "Batch No " +
                     startFrom +
-                    ' : from line ' +
+                    " : from line " +
                     (startFrom * 6 - 5) +
-                    ' to line ' +
+                    " to line " +
                     (startFrom * 6 > allTransfers.length
                       ? allTransfers.length
                       : startFrom * 6)
-                  : ''}
+                  : ""}
               </Typography>
               <div style={{ margin: 15 }}>
                 <TextField
@@ -259,17 +259,17 @@ export const CreateCashBox: FC = () => {
                   }
                   helperText={
                     startFrom === undefined || startFrom === 0
-                      ? 'Must Choose Batch'
+                      ? "Must Choose Batch"
                       : startFrom > Math.ceil(allTransfers.length / 6)
-                      ? 'The Batch you selected does not exist'
+                      ? "The Batch you selected does not exist"
                       : startFrom < 0
-                      ? 'The Batch you selected does not exist'
-                      : ' '
+                      ? "The Batch you selected does not exist"
+                      : " "
                   }
-                  type={'number'}
+                  type={"number"}
                 />
                 <Button
-                  sx={{ marginLeft: '10px' }}
+                  sx={{ marginLeft: "10px" }}
                   variant="contained"
                   onClick={() => {
                     createTransfers();
