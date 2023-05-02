@@ -50,7 +50,7 @@ export const cashBoxTxns = async (
             mintAddress,
             amount,
             decimal,
-            status: 'WATING',
+            status: 'WAITING',
           };
           if (
             transactionList.instructions.length > 0 &&

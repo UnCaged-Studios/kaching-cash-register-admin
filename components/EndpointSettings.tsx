@@ -1,56 +1,48 @@
-import { useEffect, useState } from 'react';
-import type { FC } from 'react';
-import { useForm } from 'react-hook-form';
-import { setLocalStorage } from '../utils/localStorageHandle';
-import { Box, MenuItem, TextField, Button } from '@mui/material';
+import { useEffect, useState } from "react";
+import type { FC } from "react";
+import { useForm } from "react-hook-form";
+import { setLocalStorage } from "../utils/localStorageHandle";
+import { Box, MenuItem, TextField, Button } from "@mui/material";
 
 const updateEndpoint = [
   {
-    value: 'https://api.devnet.solana.com',
-    label: 'Devnet',
+    value: "https://api.mainnet-beta.solana.com",
+    label: "Mainnet",
   },
   {
-    value: 'https://api.mainnet-beta.solana.com',
-    label: 'Mainet',
+    value: "https://api.testnet.solana.com",
+    label: "Testnet",
   },
   {
-    value: 'https://api.testnet.solana.com',
-    label: 'Testnet',
-  },
-  {
-    value: 'custom',
-    label: 'Custom',
+    value: "custom",
+    label: "Custom",
   },
 ];
 
 export const EndpointSettings: FC = () => {
-  const [endpoint, setEndpoint] = useState();
-  const [displayInput, setDisplayInput] = useState(false);
+  const [endpoint, setEndpoint] = useState(
+    "https://api.mainnet-beta.solana.com"
+  );
   const { register, handleSubmit } = useForm();
   const handleChange = async (event: any) => {
-    if (event === 'custom') {
-      setDisplayInput(true);
-    } else {
-      setDisplayInput(false);
-      setEndpoint(event);
-    }
+    setEndpoint(event);
   };
   useEffect(() => {
     if (endpoint) {
-      setLocalStorage('endpoint', JSON.stringify(endpoint));
+      setLocalStorage("endpoint", JSON.stringify(endpoint));
     }
   }, [endpoint]);
   return (
     <Box
       component="form"
       sx={{
-        '& > :not(style)': { m: 1, width: '25ch' },
+        "& > :not(style)": { m: 1, width: "25ch" },
       }}
       noValidate
       autoComplete="off"
       onSubmit={handleSubmit((inputEndpoint: any) => {
-        setEndpoint(inputEndpoint.input);
-        setDisplayInput(false);
+        setLocalStorage("endpoint", JSON.stringify(inputEndpoint.input));
+        setEndpoint("custom");
       })}
     >
       <TextField
@@ -71,14 +63,14 @@ export const EndpointSettings: FC = () => {
         ))}
       </TextField>
 
-      {displayInput && (
+      {endpoint === "custom" ? (
         <>
           <TextField
             sx={{ m: 1 }}
             id="outlined-basic"
             label="Custom Endpoint"
             variant="outlined"
-            {...register('input', { required: true })}
+            {...register("input", { required: true })}
             size="small"
             required
             color="secondary"
@@ -93,7 +85,7 @@ export const EndpointSettings: FC = () => {
             Submit
           </Button>
         </>
-      )}
+      ) : null}
     </Box>
   );
 };
